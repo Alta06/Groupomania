@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const uuid = require('uuid');
 const jwt = require('jsonwebtoken');
 
 const db = require('../db')
@@ -25,7 +24,7 @@ router.post('/signup', (req, res, next) => {
                     } else {
                         db.query(
                             `INSERT INTO Members (firstName, lastName, email, password) VALUES (
-                            '${db.escape(req.body.firstName)}',
+                            ${db.escape(req.body.firstName)},
                             ${db.escape(req.body.lastName)},
                             ${db.escape(req.body.email)},
                             ${db.escape(hash)})`, 
@@ -37,7 +36,7 @@ router.post('/signup', (req, res, next) => {
                                     });
                                 }
                                 return res.status(201).send({
-                                    msg: 'Enregistré !!'
+                                    msg: 'Enregistré !!' 
                                 })
                             }
                         )
@@ -96,7 +95,7 @@ router.post('/login', (req, res, next) => {
     )
 });
 
-router.get('/secret-route', userMiddleware.isLoggedIn, (req, res, next) => {
+router.get('/User', userMiddleware.isLoggedIn, (req, res, next) => {
     console.log(req.userData);
   res.send('This is the secret content. Only logged in users can see that!');
 });
