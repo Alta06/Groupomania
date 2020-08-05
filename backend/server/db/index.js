@@ -7,4 +7,5 @@ const connection = mysql.createConnection({
     password: 'Mdppmsql.com1'
   });
   connection.connect();
+  console.log("Connected to database Groupomania");
   module.exports = connection;

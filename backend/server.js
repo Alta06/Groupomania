@@ -10,16 +10,19 @@ app.use(bodyParser.urlencoded({
   }));
 app.use(cors());
 
-const router = require('./server/routes/index');
+const memberRoute = require('./server/routes/member');
+const postRoute = require('./server/routes/post')
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     next();
 });
 
-app.use('/api', router)
+app.use('/api', memberRoute);
+app.use('/api', postRoute);
+
 
 app.listen(process.env.PORT || '3000', () => {
     console.log(`Server is running on port: ${process.env.PORT || '3000'}`);
