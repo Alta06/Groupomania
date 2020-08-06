@@ -10,15 +10,15 @@ exports.createPost = (req, res, next) => {
 
     db.query(
         
-        `INSERT INTO Posts (userId, comments, date) VALUES (
+        `INSERT INTO Posts (userId, messages, date) VALUES (
             ${db.escape(userId)},
-            ${db.escape(req.body.message)},
+            ${db.escape(req.body.messages)},
             ${db.escape(date)}
 
         )`,
         (err, result) => {
 
-            if (err) {
+            if (err || !req.body.messages) {
                 
                 return res.status(400).send({
                     msg: err
@@ -34,7 +34,11 @@ exports.createPost = (req, res, next) => {
 exports.getAllPost = (req, res, next) => { 
     db.query(
 
-        `SELECT * FROM Posts ORDER BY date DESC`, 
+        `SELECT messages, firstName, lastName, date, likes, comments, shares
+        FROM Posts 
+        INNER JOIN Members 
+        ON userId = Members.id 
+        ORDER BY Posts.date DESC`,
         (
             (err, result) => {
                 if (err) {
@@ -45,6 +49,7 @@ exports.getAllPost = (req, res, next) => {
                 return res.status(200).send({
                     msg: 'Voila !!',
                     result
+                    
                 })
             }
         )

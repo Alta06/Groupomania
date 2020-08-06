@@ -76,3 +76,23 @@ exports.login = (req, res, next) => {
         }
     )
 }
+
+exports.getInfo = (req, res, next) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.verify(token, 'SECRETKEY');
+    const userId = decodedToken.userId;
+    db.query(
+        `SELECT * FROM Members WHERE id = ${db.escape(userId)}`,
+        (err, user) => {
+            if (err) {
+                return res.status(500).send({
+                    msg: err
+                });
+            }
+
+            res.status(200).json({
+                user
+            })
+        }
+    )
+}
