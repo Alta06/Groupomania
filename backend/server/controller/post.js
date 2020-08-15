@@ -39,7 +39,7 @@ exports.getAllPost = (req, res, next) => {
         INNER JOIN Members 
         ON userId = Members.id 
         ORDER BY Posts.date DESC`,
-        (
+        
             (err, result) => {
                 if (err) {
                     return res.status(400).send({
@@ -52,6 +52,31 @@ exports.getAllPost = (req, res, next) => {
                     
                 })
             }
-        )
+        
+    )
+}
+
+exports.likePost = (req, res, next) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.verify(token, 'SECRETKEY');
+    const userId = decodedToken.userId;
+
+    db.query(
+        `INSERT INTO Posts (usersLiked, likes) VALUES (
+            ${db.escape(userId)},
+            ${db.escape(+1)}
+        )`,
+
+        (err, result) => {
+            if (err) {
+                return res.status(400).send({
+                    msg: err
+                });
+            }
+            return res.status(201).send({
+                msg: 'Post liké !!',
+                result
+            })
+        }
     )
 }
