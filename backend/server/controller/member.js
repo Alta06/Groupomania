@@ -44,22 +44,20 @@ exports.signUp = (req, res, next) => {
 exports.login = (req, res, next) => {
     db.query(
         `SELECT * FROM Members WHERE email = ${db.escape(req.body.email)};`,
-        (err, user) => {
-            if (err) {
-                return res.status(500).send({
-                    msg: err
+        (error, user) => {
+            if (error) {
+                return res.status(401).send({
+                    error: "Utilisateur non trouvé"
                 });
             }
 
-            if (!user.length) {
-                return res.status(401).send({
-                    msg: 'Adresse email ou mot de passe incorrecte'
-                });
-            }
             bcrypt.compare(req.body.password, user[0]['password'])
-                .then(() => {
+                .then((valid) => {
+                    if (!valid) {
+                        return res.status(401).json({ error: 'Mot de pass incorrect'});
+                    }
                     res.status(200).json({
-                        userId: user.id,
+                        userId: user[0].id,
                         token: jwt.sign({
                                 userId: user[0].id
                             },
