@@ -11,6 +11,7 @@
     "express-fileupload": "^1.2.0",
     "express-vue": "^5.15.1",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.27.0",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
     "uuid": "^8.3.0"

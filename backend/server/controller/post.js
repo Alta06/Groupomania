@@ -57,7 +57,7 @@ exports.createPost = (req, res, next) => {
 exports.getAllPost = (req, res, next) => {  
     db.query(
 
-        `SELECT messages, firstName, lastName, date, likes, comments, shares, url
+        `SELECT messages, firstName, lastName, profilePic, likes, comments, shares, url
         FROM Posts 
         INNER JOIN Members 
         ON userId = Members.id 
