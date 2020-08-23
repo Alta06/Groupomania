@@ -3,11 +3,12 @@ const jwt = require('jsonwebtoken');
 
 exports.createPost = (req, res, next) => {
 
-
     if (!req.files) {
-        return res.status(500).send({ msg: "file is not found" })
+        return res.status(500).send({
+            msg: "file is not found"
+        })
     }
-        // accessing the file
+    // accessing the file
     const myFile = req.files.file;
     const newName = Date.now() + '-' + myFile.name;
 
@@ -15,11 +16,13 @@ exports.createPost = (req, res, next) => {
     myFile.mv(`images/${newName}`, function (err) {
         if (err) {
             console.log(err)
-            return res.status(500).send({ msg: "Error occured" });
+            return res.status(500).send({
+                msg: "Error occured"
+            });
         }
 
     });
-    
+
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(token, 'SECRETKEY');
     const userId = decodedToken.userId;
@@ -41,7 +44,7 @@ exports.createPost = (req, res, next) => {
         (err, result) => {
 
             if (err || !req.body.messages) {
-             
+
                 return res.status(400).send({
                     msg: err
                 });
@@ -54,10 +57,10 @@ exports.createPost = (req, res, next) => {
     )
 }
 
-exports.getAllPost = (req, res, next) => {  
+exports.getAllPost = (req, res, next) => {
     db.query(
 
-        `SELECT messages, firstName, lastName, profilePic, likes, comments, shares, url
+        `SELECT Posts.id, messages, firstName, lastName, profilePic, likes, comments, shares, url
         FROM Posts 
         INNER JOIN Members 
         ON userId = Members.id 
@@ -84,12 +87,95 @@ exports.likePost = (req, res, next) => {
     const decodedToken = jwt.verify(token, 'SECRETKEY');
     const userId = decodedToken.userId;
 
-    db.query(
-        `INSERT INTO Posts (usersLiked, likes) VALUES (
-            ${db.escape(userId)},
-            ${db.escape(+1)}
-        )`,
+    if (req.body.like === 1) {
 
+        /* db.query(
+            `SELECT Members.*, Posts.* 
+            FROM Members
+            INNER JOIN UsersLiked
+            ON UsersLiked.userId = Members.id
+            INNER JOIN Posts
+            ON Posts.ID = UsersLiked.postLiked`
+        ) */
+
+        db.query(
+       `INSERT INTO UsersLiked (userId, postLiked) VALUES (
+           ${db.escape(userId)},
+           ${db.escape(req.params.id)}
+       )`,
+
+       (err, result) => {
+           if (err) {
+               return res.status(501).send({
+                   msg: err
+               });
+           } 
+           return res.status(201).send({
+               msg: 'Post liké',
+               result
+           })
+       }
+        )} else { 
+
+            db.query(
+                `DELETE FROM UsersLiked WHERE postLiked = ${db.escape(req.params.id)}`,
+                (err, result) => {
+                    if (err) {
+                        return res.status(501).send({
+                            msg: err
+                        });
+                    } 
+                    return res.status(201).send({
+                        msg: 'Post disliké',
+                        result
+                    })
+                }
+            )
+
+    }
+}
+
+exports.commentPost = (req, res, next) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.verify(token, 'SECRETKEY');
+    const userId = decodedToken.userId;
+
+    db.query(
+            `INSERT INTO Comments (userId, message, postId) VALUES (
+            ${db.escape(userId)},
+            ${db.escape(req.body.message)},
+            ${db.escape(req.body.postId)})
+        `
+        ),
+
+        db.query(
+            ` UPDATE Posts 
+        SET comments = comments + 1
+
+        WHERE id = ${db.escape(req.body.postId)}
+`,
+            (err, result) => {
+                if (err) {
+                    return res.status(400).send({
+                        msg: err
+                    });
+                }
+                return res.status(201).send({
+                    msg: 'Post commenté et nombre de comm incrémenté de 1 !!',
+                    result
+                })
+            }
+        )
+}
+
+exports.getAllComments = (req, res, next) => {
+    db.query(
+        `SELECT message, Comments.userId, firstName, lastName, profilePic, postId
+        FROM Comments
+        INNER JOIN Members
+        ON Comments.userId = Members.id
+        ORDER BY Comments.id DESC
+      `,
         (err, result) => {
             if (err) {
                 return res.status(400).send({
@@ -97,9 +183,11 @@ exports.likePost = (req, res, next) => {
                 });
             }
             return res.status(201).send({
-                msg: 'Post liké !!',
+                msg: 'Voila les commentaires',
                 result
+
             })
         }
+
     )
 }
