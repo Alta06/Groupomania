@@ -10,7 +10,8 @@ app.use(cors());
 
 
 const memberRoute = require('./server/routes/member');
-const postRoute = require('./server/routes/post')
+const postRoute = require('./server/routes/post');
+const commentRoute = require('./server/routes/comment');
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api', memberRoute);
 app.use('/api', postRoute);
+app.use('/api', commentRoute);
 
 
 app.listen(process.env.PORT || '3000', () => {
