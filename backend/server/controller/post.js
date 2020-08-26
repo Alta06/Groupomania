@@ -150,13 +150,33 @@ exports.getLikes = (req, res, next) => {
         `SELECT * FROM UsersLiked WHERE userId = ${db.escape(userId)}`,
         (err, result) => {
             if (err) {
-                return res.status(500).send({
+                res.status(500).send({
                     msg: err
                 });
             }
-            console.log(result)
-            return res.status(200).send({
+            res.status(200).send({
                 msg: 'Voici la table UsersLiked',
+                result
+            });
+        }
+    )
+}
+
+exports.deletePost = (req, res, next) => {
+   
+    db.query(
+        `DELETE Posts, Comments, UsersLiked
+        FROM Posts
+        INNER JOIN Comments ON Posts.Id = Comments.postId
+        INNER JOIN UsersLiked ON Posts.id = postId
+        WHERE Posts.ID = ${db.escape(req.params.id)}`,
+         (err, result) => {
+            if (err) {
+                res.status(500).send({
+                    msg: err
+                });
+            }
+            res.status(200).send({
                 result
             });
         }
