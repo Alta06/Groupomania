@@ -1,5 +1,7 @@
 const db = require('../db');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+
 
 exports.createPost = (req, res, next) => {
 
@@ -51,7 +53,7 @@ exports.createPost = (req, res, next) => {
             }
 
             return res.status(201).send({
-                msg: 'Post enregistré !!'
+                result
             });
         }
     )
@@ -60,7 +62,8 @@ exports.createPost = (req, res, next) => {
 exports.getAllPost = (req, res, next) => {
     db.query(
 
-        `SELECT Posts.id, messages, firstName, lastName, profilePic, likes, comments, shares, url, date
+        `SELECT Posts.userId, Posts.id, messages, firstName,
+         lastName, profilePic, likes, comments, url, date
         FROM Posts 
         INNER JOIN Members 
         ON userId = Members.id 
@@ -165,11 +168,25 @@ exports.getLikes = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
    
     db.query(
-        `DELETE Posts, Comments, UsersLiked
-        FROM Posts
-        INNER JOIN Comments ON Posts.Id = Comments.postId
-        INNER JOIN UsersLiked ON Posts.id = postId
+        `SELECT url FROM Posts WHERE id = ${db.escape(req.params.id)}`,
+        (err, result) => {
+            if (err) {
+                res.status(500).send({
+                    msg: err
+                })
+            }
+            
+            let imageUrl = result[0].url;
+            let fileName = imageUrl.split('/images/')[1];
+            fs.unlink(`images/` + fileName, () => {})
+
+        }
+    ),
+
+    db.query(
+        `DELETE FROM Posts
         WHERE Posts.ID = ${db.escape(req.params.id)}`,
+        
          (err, result) => {
             if (err) {
                 res.status(500).send({
@@ -181,4 +198,5 @@ exports.deletePost = (req, res, next) => {
             });
         }
     )
+
 }
