@@ -1,7 +1,7 @@
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-    host: 'localhost',
+    host: process.env.DB_HOST,
     user: 'root',
     database: 'groupomania',
     password: 'Mdppmsql.com1'
