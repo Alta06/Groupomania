@@ -3,40 +3,62 @@
     <Sidebar />
     <Header />
     <div v-if="token" class="container">
-      <h1>Votre profil</h1>
 
-      <form enctype="multipart/form-data" class="details" v-for="detail in member" :key="detail.firstName">
-        <img class="profilePic" :src="detail.profilePic" alt />
-        
-        <input v-if="isHidden" type="file" @change="onFileChange" id="addPic" name="addPic" accept="image/jpg, image/png, image/jpeg" />
+      <h2>Votre profil</h2>
 
-        <div>
-          <label vmode>Prénom : {{detail.firstName}}</label>
-          <input v-if="isHidden" v-model="firstName" type="text" name="firstName" :placeholder="detail.firstName" />
+      <div v-if="isHidden">
 
-          <label>Nom : {{detail.lastName}}</label>
-          <input v-if="isHidden" v-model="lastName" type="text" name="lastName" :placeholder="detail.lastName" />
+      <form enctype="multipart/form-data" class="details" v-for="detail in member" :key="detail.firstName" >
 
-          <label>Date de naissance : {{format_date(detail.birthday)}}</label>
-          <input v-if="isHidden" v-model="birthday" type="date" name="birthday"/>
+        <img v-if="detail.profilePic" class="profilePic" :src="detail.profilePic" alt="Photo de profil de l'utilisateur" />
+        <img v-if="!detail.profilePic" class="profilePic" src="../assets/anonymous.png" alt="Photo de profil par défaut" />
 
-          <label>Poste : {{detail.employement}}</label>
-          <input v-if="isHidden" v-model="employement" type="text" name="employement" :placeholder="detail.employement" />
+        <input type="file" @change="onFileChange" id="addPic" name="addPic"
+          accept="image/jpg, image/png, image/jpeg" />
 
-          <label>Date d'entrée dans l'entreprise : {{format_date(detail.inCompanySince)}}</label>
-          <input v-if="isHidden" v-model="inCompanySince" type="date" name="inCompanySince"/>
+          <h3 v-if="isHidden">Remplissez les champs que vous souhaitez modifiez</h3>
+
+        <div class="group">
+          <input v-model="firstName" type="text" name="firstName" id="firstName"  />
+          <label for="firstName">Prénom : {{detail.firstName}}</label>
         </div>
 
-        <div>
-          <label>Adresse email : {{detail.email}}</label>
-          <input v-if="isHidden" v-model="email" type="text" name="email" :placeholder="detail.email" />
+        <div class="group">
+          <input v-model="lastName" type="text" name="lastName" id="lastName"/>
+          <label for="lastName">Nom : {{detail.lastName}}</label>
         </div>
+
+        <div class="group">
+          <input v-model="birthday" type="date" name="birthday" id="birthday" />
+          <label for="birthday">Date de naissance : {{format_date(detail.birthday)}}</label>
+        </div>
+
+        <div class="group">
+          <input v-model="employement" type="text" name="employement" id="employement"/>
+          <label for="employement">Poste : {{detail.employement}}</label>
+        </div>
+
+        <div class="group">
+          <input v-model="inCompanySince" type="date" name="inCompanySince" id="inCompanySince" />
+          <label for="inCompanySince">Date d'entrée dans l'entreprise : {{format_date(detail.inCompanySince)}}</label>
+        </div>
+
+        <div class="group">
+          <input v-model="email" type="text" name="email" id="email"/>
+          <label for="email">Adresse email : {{detail.email}}</label>
+        </div>
+
+                  <p v-if="errorMsg"> {{errorMsg}} </p>
+                  <p v-if="successMsg"> {{successMsg}} </p>
+
+
 
         <div v-if="detail.isAdmin" :style="{'color':'red'}">
           <p>Cet utilisateur est administrateur</p>
         </div>
       </form>
 
+</div>
       <a class="btn" @click="isHidden = !isHidden" href="#">Gérer le compte</a>
       <a v-if="isHidden" class="btn" @click="edit" href="#">Confirmer les changements</a>
       <a v-if="isHidden" class="btn btn-red" @click="deleteUser" href="#">Supprimer le compte</a>
@@ -65,9 +87,7 @@
       return {
         member: {},
         isHidden: false,
-
         token: this.$store.getters.isLoggedIn,
-
         selectedFile: "",
         firstName: "",
         lastName: "",
@@ -76,6 +96,8 @@
         password: "",
         inCompanySince: "",
         employement: "",
+        successMsg: "",
+        errorMsg: ""
       };
     },
     async created() {
@@ -83,22 +105,22 @@
     },
 
     methods: {
-      edit() {
+      async edit() {
         try {
           const formData = new FormData();
           formData.append("file", this.selectedFile);
           formData.append("firstName", this.firstName);
           formData.append("lastName", this.lastName);
           formData.append("birthday", this.birthday);
-          formData.append("email", this.email);
+          formData.append("email", (this.email).toLowerCase());
           formData.append("inCompanySince", this.inCompanySince);
           formData.append("employement", this.employement);
 
-          const response = AuthService.updateUser(formData).then(() => {
-            this.msg = response.msg;
-          });
+          const response = await AuthService.updateUser(formData)
+          this.successMsg = response;
+
         } catch (error) {
-          this.msg = error.response.data.msg;
+          this.errorMsg = error;
         }
       },
       onFileChange(e) {
@@ -114,23 +136,74 @@
 
       deleteUser() {
         let r = confirm("Êtes-vous sûr de vouloir supprimer votre compte ainsi que toutes vos données ?")
-            if (r == true) {
-        try {
-          const response = AuthService.deleteUser().then(() => {
-            this.msg = response.msg;
-            this.$store.dispatch('logout');
-            this.$router.go();
+        if (r == true) {
+          try {
+            const response = AuthService.deleteUser().then(() => {
+              this.msg = response.msg;
+              this.$store.dispatch('logout');
+              this.$router.go();
             })
-            
+
           } catch (error) {
-          this.msg = error.response.data.msg;
-          }}
+            this.msg = error.response.data.msg;
+          }
+        }
       },
     },
   };
 </script>
 
 <style scoped lang="scss">
+  /* form starting stylings ------------------------------- */
+
+  .details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .group {
+    position: relative;
+    margin-bottom: 45px;
+
+    input {
+      font-size: 18px;
+      padding: 10px 10px 10px 5px;
+      width: 300px;
+      border: none;
+      border-bottom: 1px solid #ffffff;
+      background: #01698b;
+      color: white;
+    }
+
+    input:focus {
+      outline: none;
+    }
+
+    /* LABEL ======================================= */
+    label {
+      color: rgb(255, 255, 255);
+      font-size: 18px;
+      font-weight: normal;
+      position: absolute;
+      pointer-events: none;
+      left: 5px;
+      top: 10px;
+      transition: 0.2s ease all;
+    }
+
+    /* active state */
+    input:focus~label,
+    input:valid~label {
+      top: -20px;
+      font-size: 14px;
+      color: #ffffff;
+    }
+
+  }
+
+
+
   .container {
     display: flex;
     flex-direction: column;
@@ -151,8 +224,16 @@
       margin: 8px auto;
       width: 320px;
 
-      &-red{
+      &:hover {
+        background-color: #14753e;
+      }
+
+      &-red {
         background-color: red;
+
+        &:hover {
+          background-color: rgb(121, 1, 1);
+        }
       }
     }
 
@@ -162,8 +243,13 @@
       border-radius: 15px;
     }
 
-    h1 {
+    h2, h3 {
       text-align: center;
+    }
+
+    h3 {
+      padding-bottom: 50px;
+
     }
 
     #addPic {
@@ -172,34 +258,16 @@
       border-radius: 10px;
     }
 
-    .details {
-      font-size: 1.5em;
-      width: 70%;
-      margin: auto;
-      display: flex;
-      flex-direction: column;
-      text-align: center;
+  }
 
-      div {
-        padding: 0;
-        list-style: none;
-        display: flex;
-        flex-direction: column;
-
-        input {
-          height: 24px;
-          margin: auto;
-        }
-
-        label {
-          padding: 15px;
-        }
-
-        a {
-          color: #fff;
-        }
-      }
-    }
+  .errorMsg {
+    font-size: 1em;
+    text-align: center;
+    background: red;
+    width: 50%;
+    border-radius: 15px;
+    margin: 10px auto;
+    padding: 5px;
   }
 
   @media all and (max-width: 768px) {
@@ -208,13 +276,6 @@
       width: 80%;
     }
 
-    .details {
-      flex-direction: column;
-    }
-
-    li {
-      padding: 5px;
-    }
   }
 
   @media all and (max-width: 425px) {

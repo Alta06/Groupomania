@@ -3,19 +3,21 @@ import axios from 'axios';
 const url = 'http://localhost:3000/api/';
 
 export default {
-    login(credentials) {
 
+    login(credentials) {
         return axios
             .post(url + 'login/', credentials)
             .then(response => response.data)
             .catch((error) => error.response.message)
     },
+
     signup(credentials) {
         return axios
             .post(url + 'signup/', credentials)
             .then(response => response.data.message )
             .catch((error) => error.data.message)
     },
+
     getInfo() {
         return axios
             .get(url + 'user/')
@@ -26,7 +28,8 @@ export default {
     updateUser(formData) {
         return axios
             .put(url + 'user/', formData)
-            .then(res => res.data)
+            .then(response => response.data.message)
+            .catch((error) => error.response.message)
     },
 
     deleteUser() {
@@ -35,5 +38,7 @@ export default {
         .then(res => res.data)
         .catch((err) => err)
     }
+
+    
 
 }

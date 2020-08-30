@@ -3,16 +3,16 @@
       <ul>
 
         <li>
-          <router-link to="/SignIn"><i class="power fas fa-power-off"></i></router-link>
+          <router-link to="/SignIn"><em class="power fas fa-power-off"></em></router-link>
         </li>
         <li >
-          <router-link to="/latest"><i class="clock far fa-clock"></i></router-link>
+          <router-link to="/latest"><em class="clock far fa-clock"></em></router-link>
         </li>
         <li >
-          <router-link to="/User"><i class="user fas fa-user-cog"></i></router-link>
+          <router-link to="/User"><em class="user fas fa-user-cog"></em></router-link>
         </li>
-        <li>
-          <router-link to="/Admin"><i class="admin fas fa-tools"></i></router-link>
+        <li v-if="$store.getters.type === 1">
+            <router-link to="/Admin"><em class="admin fas fa-tools"></em></router-link>
         </li>
 
       </ul>
@@ -21,32 +21,16 @@
 </template>
 
 <script>
-    import AuthService from '../services/AuthService'
 
 export default {
+    
 name: 'sidebar',
 data () {
     return {
-        token: this.$store.getters.isLoggedIn 
+
     }
 },
-
-async created() {
-       
-this.member = await AuthService.getInfo();
-
-},
-
-methods: {
-    isAdmin() {
-         if (this.member[0].isAdmin) {
-             true;
-         } 
-
-        
-    }
     
-}
 }
 
 </script>
@@ -55,8 +39,8 @@ methods: {
 
 $bgColor : #003A4D;
 
-
 nav {
+    z-index: 1;
     background: white;
     display: flex;
     flex-direction: column;
@@ -88,7 +72,7 @@ nav {
 
             font-size: 2.5em;
 
-            i {
+            em {
                 width: 40px;
                 text-align: center;
                 border: solid black 3px;
@@ -108,7 +92,7 @@ nav {
     box-shadow: 0 0 20px $bgColor;
 }
 
-.router-link-exact-active i {
+.router-link-exact-active em {
     @include hoverButton()
 }
 
@@ -117,7 +101,9 @@ nav {
 }
 
 .admin:hover {
-    @include hoverButton()
+    @include hoverButton();
+    cursor: pointer;
+    
 
 }
 
@@ -154,7 +140,7 @@ nav {
             li {
                 padding: 50px 0 50px 5px;
 
-                i {
+                em {
                     font-size: 0.7em;
 
                 }
@@ -169,16 +155,7 @@ nav {
 
 }
 
-@media all and (max-width: 425px) {
-
-    header {
-        justify-content: center;
-
-        h1 {
-           display: none;
-        }
-    }
-  
+@media all and (max-width: 425px) { 
 
     nav {
         width: 100%;
@@ -200,34 +177,6 @@ nav {
         .two {
             display: none;
         }
-    }
-
-    .message {
-        padding: 10px;
-
-        .messageHeader {
-            width: 250px;
-        }
-
-        .messageContent {
-            img {
-                width: 300px;
-            }
-
-            .control {
-                width: 250px;
-            }
-        }
-       
-    }
-
-    footer {
-        img {
-            margin: auto;
-            width: 150px;
-        }
-        flex-direction: column;
-        margin-bottom: 100px;
     }
 }
 

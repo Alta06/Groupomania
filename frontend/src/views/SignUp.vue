@@ -3,7 +3,7 @@
   <div class="formContainer">
     <Sidebar />
     <Header />
-    <form>
+    <form class="signUpForm">
       <h2>Pas encore inscrit ?</h2>
 
         <div v-if="this.msg" class="errorMsg">
@@ -24,7 +24,7 @@
       </div>
 
       <div class="group">
-        <input v-model="email" class="formInput" required type="text">
+        <input v-model="email" class="formInput" required type="email">
         <label class="label">Email</label>
        
       </div>
@@ -44,7 +44,7 @@
       <div>
 
         <h3>Déjà inscrit ?</h3>
-        <router-link to="SignIn" class="button">Je me connecte</router-link>
+        <router-link to="SignIn" id="goToConnect">Je me connecte</router-link>
 
       </div>
     </form>
@@ -90,7 +90,7 @@
           const credentials = {
             firstName: this.firstName,
             lastName: this.lastName,
-            email: this.email,
+            email: (this.email).toLowerCase(),
             password: this.password,
             password_repeat: this.password_repeat
           };
@@ -130,19 +130,41 @@
 </script>
 
 <style lang="scss">
-  .button {
+
+  $bgButton : #03C3FF;
+  $bgButton2 : #1FC567;
+
+  @mixin button ($bgButton) {
+    transition: .4s;
+    margin-bottom: 30px;
+    border: none;
+    background-color: $bgButton;
+    width: 320px;
+    height: 60px;
+    border-radius: 8px;
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+   #btnSubmit {
+    @include button($bgButton2);
+    
+    &:hover {
+            background-color: #14753e;
+        }
+  }
+
+  #goToConnect {
+    @include button($bgButton);
     display: flex;
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    height: 60px;
-    color: white;
-    background: #1FC567;
-    border-radius: 5px;
-    font-size: 1.6em;
-    font-weight: bolder;
-    margin-top: 8px;
-    width: 320px;
+    &:hover {
+            background-color: #006483;
+        }
   }
 
   .container {
@@ -165,7 +187,7 @@
 
   /* form starting stylings ------------------------------- */
 
-  form {
+  .signUpForm {
     display: flex;
     flex-direction: column;
     align-items: center;

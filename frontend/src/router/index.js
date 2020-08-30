@@ -1,13 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store';
+import AuthService from '../services/AuthService'
+
+
 
 Vue.use(VueRouter);
 
 const router = new VueRouter({
   mode: 'history',
-  routes : [
-    {
+  routes: [{
       path: '/',
       name: 'signin',
       component: () => import('../views/SignIn.vue')
@@ -16,13 +18,13 @@ const router = new VueRouter({
       path: '/signin',
       name: 'SignIn',
       component: () => import('../views/SignIn.vue')
-  
+
     },
     {
       path: '/signup',
       name: 'SignUp',
       component: () => import('../views/SignUp.vue')
-  
+
     },
     {
       path: '/user',
@@ -31,7 +33,7 @@ const router = new VueRouter({
       meta: {
         requiresAuth: true
       }
-  
+
     },
     {
       path: '/latest',
@@ -45,9 +47,23 @@ const router = new VueRouter({
       path: '/admin',
       name: 'Admin',
       component: () => import('../views/Admin.vue'),
-      meta: {
-        isAdmin: true
-      },
+      async beforeEnter(to, from, next) {
+        let member = await AuthService.getInfo();
+        let hasPermission = member[0].isAdmin
+        if (hasPermission) {
+          next();
+
+        } else {
+          next({
+            name: 'Latest',
+            query: { redirectFrom: to.fullPath }
+          })
+        }
+
+
+
+
+      }
     }
 
   ]
@@ -59,25 +75,26 @@ router.beforeEach((to, from, next) => {
       next()
       return
     }
-      next('/signin')
-    } else {
-      next()
+    next('/signin')
+  } else {
+    next()
+  }
+});
+
+/* router.beforeEnter((to, from, next) => {
+
+  
+  if (to.matched.some(record => record.meta.isAdmin)) {
+    if (store.getters.isAdmin == 1) {
+
+      next();
+      return;
     }
-  },
+    next('/latest');
 
-  router.beforeEach((to, from, next) => {
-    if(to.matched.some(record => record.meta.isAdmin)) {
-        if (store.getters.isAdmin == 1) {
-
-            next();
-            return;
-        }
-        console.log("not admin")
-        next('/latest');
-
-    } else {
-        next();
-    }
-}));
+  } else {
+    next();
+  }
+}); */
 
 export default router

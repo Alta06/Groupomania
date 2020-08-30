@@ -27,11 +27,10 @@ header {
 @media all and (max-width: 425px) {
 
     header {
-        justify-content: center;
+                   display: none;
 
-        h1 {
-           display: none;
-        }
+
+       
     }
 }
 

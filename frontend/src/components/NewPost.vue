@@ -3,14 +3,14 @@
         <section class="message">
             <form enctype="multipart/form-data">
                 <div class="messageHeader">
-                    <h2>Partagez un gif avec vos collègues</h2>
+                    <label for="addGif" name="addGif">Partagez un gif avec vos collègues</label>
                     <input type="file" @change="onFileChange" id="addGif" name="addGif" />
                 </div>
 
                 <div class="messageContent">
                     <div class="control">
-
-                        <input v-model="messages" name="messages" type="text" placeholder="Tapez ici votre message" />
+                        <label for="messages" id="sendLabel" name="messages">Ajoutez-y un message</label>
+                        <textarea v-model="messages" name="messages" id="messages" type="text"/>
                         <button @click="post" type="button" id="send">Envoyer</button>
                     </div>
                 </div>
@@ -36,7 +36,7 @@
                 const selectedFile = e.target.files[0]; // accessing file
                 this.selectedFile = selectedFile;
             },
-           post() {
+            post() {
                 try {
                     const formData = new FormData();
                     formData.append("file", this.selectedFile);
@@ -47,12 +47,13 @@
                         
                     });
 
+                    setTimeout(() => {
+                        this.$router.go()
+                    }, 100);
 
                 } catch (error) {
                     this.msg = error.response.data.msg;
                 }
-
-                
 
             },
         },
@@ -63,15 +64,34 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-    .container {
-        margin: 50px auto 50px;
-        display: flex;
+
+ @mixin btn {
+        height: 50px;
+        width: 80px;
+        align-self: center;
+        margin: auto 0;
+        background-color: #1fc567;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: .4s;
+        cursor: pointer;
+        font-size: 2em;
+        font-weight: bold;
+
+        &:hover {
+            background-color: #14753e;
+        }
     }
 
     #addGif {
         border-radius: 10px;
         background-color: #1fc567;
         margin: auto;
+    }
+
+    #sendLabel {
+        color: #003a4d;
     }
 
     .message {
@@ -91,7 +111,7 @@
             width: 300px;
             margin-bottom: 25px;
 
-            h2 {
+            label {
                 margin: 10px auto;
                 font-size: 1.2em;
             }
@@ -121,38 +141,32 @@
                 flex-direction: column;
 
                 #send {
-                    margin: auto;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    text-decoration: none;
-                    height: 50px;
-                    color: white;
-                    background: #1fc567;
-                    border-radius: 5px;
-                    font-size: 2em;
-                    font-weight: bolder;
-                    margin-top: 25px;
-                    width: 240px;
-                    border: none;
-                    cursor: pointer;
-                    transition: .4s;
-
-
-                    &:hover {
-                        background-color: #158545;
-                    }
+                    @include btn;
+                    margin-top: 20px;
+                    width: 250px;
 
                 }
 
-                input {
+                textarea {
+                    padding: 15px;
                     height: 80px;
+                    border-radius: 10px;
+                    border: 2px solid #003a4d;
+                    height: 60%;
+
+                   
                 }
             }
         }
     }
 
     @media all and (max-width: 425px) {
+
+            .container {
+                width: 100%;
+                margin-top: 10px;
+            }
+
         .message {
             padding: 10px;
             right: 0;

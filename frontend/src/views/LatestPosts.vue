@@ -33,12 +33,24 @@
 </script>
 
 <style lang="scss">
+
+.container {
+  display: flex;
+}
+
+@media all and (min-width: 768px) and (max-width: 1024px) {
+.latestPosts {
+    width: 80%;
+    margin: auto 0 0 auto;
+}
+}
   @media all and (max-width: 425px) {
 
    
     header {
       display: none;
     }
+    
 
   }
 </style>

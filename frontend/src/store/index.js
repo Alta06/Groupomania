@@ -21,8 +21,8 @@ export default new Vuex.Store({
       return state.token;
     }, getUser: state => {
       return state.user;
-    }, isAdmin: state => {
-      return state.admin;
+    }, type: state => {
+      return state.type;
     }
   },
   mutations: {
@@ -32,8 +32,8 @@ export default new Vuex.Store({
     SET_USER: (state, user) => {
       state.user = user;
     },
-    SET_ADMIN: (state, admin) => {
-      state.admin = admin;
+    SET_ADMIN: (state, type) => {
+      state.type = type;
     },
     RESET: state => {
       Object.assign(state, getDefaultState());
@@ -41,8 +41,8 @@ export default new Vuex.Store({
    
   },
   actions: {
-    becomeAdmin: ({commit}, {admin}) => {
-      commit('SET_ADMIN', admin);
+    becomeAdmin: ({commit}, {type}) => {
+      commit('SET_ADMIN', type);
     },
     login: ({ commit}, {token, user}) => {
       commit('SET_TOKEN', token);

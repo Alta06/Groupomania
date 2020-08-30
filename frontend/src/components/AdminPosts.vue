@@ -59,11 +59,7 @@
             width: 80%;
             margin: auto 0 0 auto;
         }
-
-
-
 }
-
 
 
 h2 {

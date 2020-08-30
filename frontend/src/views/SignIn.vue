@@ -4,7 +4,7 @@
     <Sidebar />
     <Header />
 
-    <form v-if="!token">
+    <form class="signInForm" v-if="!token">
       <h2>Déjà inscrit ?</h2>
 
       <div v-if="this.msg" class="errorMsg">
@@ -12,20 +12,20 @@
       </div>
 
       <div class="group">
-        <input v-model="email" class="formInput" type="text" required>
-        <label class="label">Email</label>
+        <input v-model="email" class="formInput" id="email" type="email" required>
+        <label for="email" class="label">Email</label>
       </div>
 
       <div class="group">
-        <input v-model="password" class="formInput" type="password" required>
-        <label class="label">Mot de passe</label>
+        <input v-model="password" class="formInput" id="password" type="password" required>
+        <label for="password" class="label">Mot de passe</label>
       </div>
 
       <button @click="login" type="button" id="btnSubmit">Connexion</button>
       <div>
 
         <h3>Pas encore inscrit ?</h3>
-        <router-link to="SignUp" class="button">Je crée un compte</router-link>
+        <router-link to="SignUp" id="createAccountBtn">Je crée un compte</router-link>
 
       </div>
     </form>
@@ -70,7 +70,7 @@
       async login(e) {
         try {
           const credentials = {
-            email: this.email,
+            email: (this.email).toLowerCase(),
             password: this.password
           }
 
@@ -94,9 +94,9 @@
                   user
                 });
                 this.member = AuthService.getInfo().then((user) => {
-                  let admin = user[0].isAdmin;
+                  let type = user[0].isAdmin;
                   this.$store.dispatch('becomeAdmin', {
-                    admin
+                    type
                   });
                 });
 
@@ -126,31 +126,60 @@
 </script>
 
 <style lang="scss">
-  .button {
+
+  $bgButton : #03C3FF;
+  $bgButton2 : #1FC567;
+
+  @mixin button ($bgButton) {
+    transition: .4s;
+    margin-bottom: 30px;
+    border: none;
+    background-color: $bgButton;
+    width: 320px;
+    height: 60px;
+    border-radius: 8px;
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  #createAccountBtn {
+    @include button($bgButton2);
     display: flex;
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    height: 60px;
-    color: white;
-    background: #1FC567;
-    border-radius: 5px;
-    font-size: 2em;
-    font-weight: bolder;
-    margin-top: 8px;
-    width: 320px;
+    &:hover {
+            background-color: #14753e;
+        }
+  }
+
+  #btnSubmit {
+    @include button($bgButton);
+
+    &:hover {
+            background-color: #006483;
+        }
   }
 
   .ifConnected {
 
+   margin: 25% 0;
+
     #disconnectBtn {
-      background: red;
-      margin: auto;
-      border: none;
+      @include button(red);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    margin: auto;
+    border: none;
+     &:hover {
+            background-color: rgb(109, 0, 0);
+        }
     }
   }
-
-
 
   .container {
     margin: 50px auto 50px;
@@ -166,7 +195,7 @@
 
   /* form starting stylings ------------------------------- */
 
-  form {
+  .signInForm {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -221,23 +250,13 @@
     color: #ffffff;
   }
 
-  $bgButton : #03C3FF;
-  $bgButton2 : #1FC567;
+@media all and (max-width: 425px) {
 
-  @mixin button ($bgButton) {
-    margin-bottom: 30px;
-    border: none;
-    background-color: $bgButton;
-    width: 320px;
-    height: 60px;
-    border-radius: 8px;
-    color: white;
-    font-size: 2em;
-    font-weight: bold;
-    cursor: pointer;
+  .ifConnected {
+     margin: 50% 0%;
+
   }
 
-  #btnSubmit {
-    @include button($bgButton)
-  }
+}
+
 </style>

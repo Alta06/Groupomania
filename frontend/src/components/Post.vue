@@ -30,7 +30,6 @@
 
         async created() {
             this.posts = await PostService.getAllPost();
-            console.log(this.$store.getters)
             
         },
 
@@ -51,21 +50,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-
-@media all and (min-width: 1024px) {
-.post {
-    width: 100%;
-    margin: 0;
-}
-}
-
-
-/* @media all and (min-width: 768px) {
-.post {
-    width: 80%;
-            margin: auto 0 0 auto;
-}
-} */
 
 
 </style>

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 exports.commentPost = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = jwt.verify(token, 'SECRETKEY');
+    const decodedToken = jwt.verify(token, `${process.env.sktdt}`);
     const userId = decodedToken.userId;
 
     db.query(

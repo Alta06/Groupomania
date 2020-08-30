@@ -26,7 +26,7 @@ exports.createPost = (req, res, next) => {
     });
 
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = jwt.verify(token, 'SECRETKEY');
+    const decodedToken = jwt.verify(token, `${process.env.sktdt}`);
     const userId = decodedToken.userId;
     const date = new Date().toLocaleString();
     const image = {
@@ -85,7 +85,7 @@ exports.getAllPost = (req, res, next) => {
 
 exports.likePost = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = jwt.verify(token, 'SECRETKEY');
+    const decodedToken = jwt.verify(token, `${process.env.sktdt}`); 
     const userId = decodedToken.userId;
 
     db.query(
@@ -147,7 +147,7 @@ exports.likePost = (req, res, next) => {
 
 exports.getLikes = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = jwt.verify(token, 'SECRETKEY');
+    const decodedToken = jwt.verify(token, `${process.env.sktdt}`);
     const userId = decodedToken.userId;
     db.query(
         `SELECT * FROM UsersLiked WHERE userId = ${db.escape(userId)}`,
@@ -184,8 +184,14 @@ exports.deletePost = (req, res, next) => {
     ),
 
     db.query(
-        `DELETE FROM Posts
-        WHERE Posts.ID = ${db.escape(req.params.id)}`,
+        `DELETE p, c, u
+         FROM Posts AS p
+         LEFT JOIN Comments AS c
+         ON c.postId = p.ID 
+         LEFT JOIN usersLiked AS u
+         ON u.postLiked = p.ID 
+     
+        WHERE p.ID = ${db.escape(req.params.id)}`,
         
          (err, result) => {
             if (err) {

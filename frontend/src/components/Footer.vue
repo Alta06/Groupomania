@@ -17,6 +17,7 @@ footer {
     color: #fff;
     display: flex;
     justify-content: center;
+    margin-bottom: 80px;
 
     p {
         align-self: center;
@@ -30,12 +31,16 @@ footer {
 @media all and (max-width: 425px) {
 
       footer {
+        flex-direction: row;
+
+          p {
+              margin: 5px;
+              font-size: .8em;
+          }
         img {
-            margin: auto;
+            margin: 0;
             width: 150px;
         }
-        flex-direction: column;
-        margin-bottom: 100px;
     }
 }
 

@@ -1,5 +1,4 @@
 <template>
-    <div class="container">
         <section class="singlePost">
 
             <div class="author">
@@ -19,7 +18,7 @@
                             <h3 class="commentAuthor"> {{comment.firstName}} {{comment.lastName}} </h3>
                             <p class="commentMessage"> {{comment.message}} </p>
                             <button v-if="edit" @click="deleteComment(comment)"
-                                class="btn btn-delete">Supprimer</button>
+                                class="btn btn-deleteComment">Supprimer</button>
                         </div>
 
                     </div>
@@ -34,59 +33,9 @@
 
             </div>
             <button v-if="edit" class="btn btn-delete" @click="deletePost(post)">Supprimer le post</button>
-
-            <!-- <div class="messageHeader">
-                <div class="authorDetails">
-                    <img class="" :src="post.profilePic" alt="Photo de profil de l'utilisateur">
-                    <h2 href="#">{{post.firstName}} {{post.lastName}} </h2>
-                    <p class="postDate">- {{format_date(post.date)}}</p>
-                    <i  @click="deletePost(post)" class="far fa-times-circle deleteComment"></i>
-                </div>
-                <p class="messageText"> {{post.messages}} </p>
-            </div>
-
-            <div class="messageContent">
-
-                <img class="gifPosted" :src="post.url" alt="Gif envoyé par l'utilisateur">
-                <div class="control">
-                    <ul>
-                        <li>
-                            <i @click="showDiv(post)" class="comment far fa-comment-alt">{{post.comments}}</i>
-                        </li>
-                        <li>
-                            <i @click="like(post)" :class="{ fa: liked}"
-                             class="like far fa-heart">{{post.likes}}</i>
-                        </li>
-                    </ul>
-                </div>
-
-                <div v-if=" chosenExpenseId" class="newComment">
-                    <p class="commentMessage">Ecrivez un commentaire pour vos amis !</p>
-                    <div class="inputBloc">
-                        <form>
-                            <input type="text" v-model="message">
-                            <button type="button" @click="newComment(post)">Envoyer</button>
-                        </form>
-
-                    </div>
-
-                    <div v-for="(comment, index) in comments" :key="index">
-                        <div v-if="comment.postId === post.id" class="comments">
-                            <div class="authorDetails">
-                                <img class="commentProfilePic" :src="comment.profilePic" alt="">
-                                <h2 href="#">{{comment.firstName}} {{comment.lastName}}</h2>
-                                <i @click="deleteComment(comment)"
-                                    class="far fa-times-circle deleteComment"></i>
-
-                            </div>
-                            <p class="messageText"> {{comment.message}} </p>
-                        </div>
-                    </div>
-
-                </div>
-            </div> -->
+        <hr>
         </section>
-    </div>
+
 </template>
 
 <script>
@@ -216,6 +165,8 @@
     .singlePost {
         color: white;
         padding: 10px;
+        border-radius: 25px;
+        margin-top: 50px;
     }
 
     .author {
@@ -253,6 +204,9 @@
         .allComments {
             display: flex;
             flex-direction: column;
+            height: 250px;
+            width: 50%;
+            overflow: scroll;
         }
 
         .comment {
@@ -288,6 +242,13 @@
             background: red;
             width: 100%;
         }
+        
+        &-deleteComment {
+                margin: auto;
+                background: red;
+                width: 100%;
+                height: 20px;
+            }
 
         &-seeGif,
         &-seeComment {
@@ -302,7 +263,6 @@
 
     @media all and (min-width: 768px) {
         @mixin btn {
-            width: 150px;
             font-size: 1.2em;
             cursor: pointer;
         }
@@ -347,6 +307,7 @@
     }
         .btn {
             @include btn;
+        
 
             &-delete {
                 margin: auto;
@@ -355,7 +316,10 @@
                 height: 40px;
             }
 
-           
+            &-seeGif,
+        &-seeComment {
+            width: 150px;
+        }
 
         }
     }
@@ -398,6 +362,34 @@
         .commentMessage {
             margin: 5px;
         }
+    }
+
+       .btn {
+        @include btn;
+        font-size: 1em;
+
+        &-delete {
+            margin: auto;
+            background: red;
+            width: 100%;
+        }
+        
+        &-deleteComment {
+                margin: auto;
+                background: red;
+                width: 100%;
+                height: 20px;
+            }
+
+        &-seeGif,
+        &-seeComment {
+            background: #1fc567;
+        }
+
+        &-edit {
+            background: rgb(23, 162, 255);
+        }
+
     }
     }
 </style>

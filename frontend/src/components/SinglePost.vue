@@ -1,12 +1,16 @@
 <template>
-    <div class="container" >
+    <div class="container">
         <section class="message">
             <div class="messageHeader">
                 <div class="authorDetails">
-                    <img class="" :src="post.profilePic" alt="Photo de profil de l'utilisateur">
+                    <img v-if="post.profilePic" class="profilePic" :src="post.profilePic"
+                        alt="Photo de profil de l'utilisateur">
+                    <img v-if="!post.profilePic" class="profilePic" src="../assets/anonymous.png"
+                        alt="Photo de profil par défaut">
                     <h2 href="#">{{post.firstName}} {{post.lastName}} </h2>
-                    <p class="postDate">- {{format_date(post.date)}}</p>
-                    <i v-if="isPostAuthor(post)" @click="deletePost(post)" class="far fa-times-circle deleteComment"></i>
+                    <p class="postDate">{{format_date(post.date)}}</p>
+                    <em v-if="isPostAuthor(post)" @click="deletePost(post)"
+                        class="far fa-times-circle deleteComment"></em>
 
                 </div>
 
@@ -19,20 +23,20 @@
                 <div class="control">
                     <ul>
                         <li>
-                            <i @click="showDiv(post)" class="comment far fa-comment-alt">{{post.comments}}</i>
+                            <em @click="showDiv(post)" class="comment far fa-comment-alt">{{post.comments}}</em>
                         </li>
                         <li>
-                            <i @click="like(post)" :class="{ fa: liked}"
-                             class="like far fa-heart">{{post.likes}}</i>
+                            <em @click="likeIt(post)" :class="liked?'fa':''"
+                                class="like far fa-heart">{{post.likes}}</em>
                         </li>
                     </ul>
                 </div>
 
                 <div v-if="post === chosenExpenseId" class="newComment">
-                    <p class="commentMessage">Ecrivez un commentaire pour vos amis !</p>
                     <div class="inputBloc">
                         <form>
-                            <input type="text" v-model="message">
+                            <label for="commentPost">Ecrivez un commentaire pour vos amis</label>
+                            <textarea type="text" id="commentPost" v-model="message" />
                             <button type="button" @click="newComment(post)">Envoyer</button>
                         </form>
 
@@ -40,20 +44,21 @@
 
                     <div v-for="(comment, index) in comments" :key="index">
                         <div v-if="comment.postId === post.id" class="comments">
-                            <div class="authorDetails">
+                            <div class="commentAuthorDetails">
                                 <img class="commentProfilePic" :src="comment.profilePic" alt="">
                                 <h2 href="#">{{comment.firstName}} {{comment.lastName}}</h2>
-                                <i v-if="isCommentAuthor(comment)" @click="deleteComment(comment)"
-                                    class="far fa-times-circle deleteComment"></i>
+                                <em v-if="isCommentAuthor(comment)" @click="deleteComment(comment)"
+                                    class="far fa-times-circle deleteComment"></em>
 
                             </div>
-                            <p class="messageText"> {{comment.message}} </p>
+                            <p class="commentText"> {{comment.message}} </p>
                         </div>
                     </div>
 
                 </div>
             </div>
         </section>
+
     </div>
 </template>
 
@@ -62,13 +67,12 @@
     import CommentService from '../services/CommentService';
     import moment from "moment";
 
-
     export default {
         name: 'SinglePost',
 
         data() {
             return {
-                
+
                 comments: {
 
                 },
@@ -85,14 +89,20 @@
         },
 
         props: ['post'],
-        
+
         async created() {
+            this.posts = await PostService.getAllPost();
             this.comments = await CommentService.getAllComments();
-            this.likes = await PostService.getLikes();
+
         },
 
-        mounted(post) {
-            this.isLiked(post)
+         async mounted() {
+            this.likes = await PostService.getLikes();
+            this.isLiked();
+        },
+
+        computed: {
+            
         },
 
         methods: {
@@ -111,18 +121,21 @@
             isPostAuthor(post) {
                 if (this.$store.getters.getUser === post.userId) {
                     return true
-                } 
+                }
             },
 
-            isLiked() {
-                const response = PostService.getLikes().then(() => {
-                    this.msg = response;
-                })
+              isLiked() {
+                let likeResult = this.likes.result;
+                let postResult = this.post;
 
-      
+                for (let r of likeResult) {
+                    if (r.postLiked === postResult.id) {
+                        this.liked = true;
+                    } 
+                }                
             },
 
-            like(post) {
+            likeIt(post) {
                 try {
                     const postId = post.id;
                     const response = PostService.likePost(postId).then(() => {
@@ -132,7 +145,7 @@
                 } catch (error) {
                     this.msg = error.response.data.msg
                 }
-                
+
                 this.liked = !this.liked;
 
                 if (this.liked) {
@@ -141,7 +154,7 @@
                     post.likes--;
                 }
             },
-        
+
             async newComment(post) {
                 const formData = new FormData();
                 const postId = post.id;
@@ -164,12 +177,12 @@
                 const response = CommentService.deleteComment(commentId, postId).then(() => {
                     this.msg = response.msg;
                 })
-                
-                    if (comment.postId === this.post.id) {
-                        this.comments.splice(comment, index);
-                        this.post.comments--;
-                    }
-                    this.comments = await CommentService.getAllComments();
+
+                if (comment.postId === this.post.id) {
+                    this.comments.splice(comment, index);
+                    this.post.comments--;
+                }
+                this.comments = await CommentService.getAllComments();
 
             },
 
@@ -197,57 +210,30 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.fa:before { 
-    color: red;
-}
-    .container {
-        margin: 50px auto 50px;
-        display: flex;
-        flex-direction: column;
+    @mixin btn {
+        transition: .4s;
+        height: 50px;
+        width: 180px;
+        align-self: center;
+        margin: 10px;
+        background-color: #1fc567;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: .4s;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #14753e;
+        }
     }
 
-    .newComment {
-        background-color: #003A4D;
-        border-radius: 15px;
-        display: flex;
-        flex-direction: column;
-        margin: 5px;
+    .fa:before {
+        color: red;
+    }
 
-        .commentMessage {
-            margin: 10px;
-        }
-
-        .inputBloc {
-            display: flex;
-
-            form {
-                width: 100%;
-
-            }
-
-            button {
-                height: 50px;
-                width: 80px;
-                align-self: center;
-                margin: auto 0;
-                background-color: #1fc567;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                transition: .4s;
-
-                &:hover {
-                    background-color: #14753e;
-                }
-            }
-
-            input {
-                height: 50px;
-                width: 70%;
-                margin: 20px 10px;
-            }
-        }
-
+    .container {
+        margin: 50px auto;
     }
 
     .message {
@@ -264,7 +250,7 @@
             background: #003A4D;
             border-radius: 25px;
             flex-wrap: wrap;
-            width: 400px;
+
 
             .authorDetails {
                 display: flex;
@@ -272,6 +258,7 @@
                 h2 {
                     text-align: start;
                     font-size: 1.3em;
+                    flex: 1;
                 }
 
                 .postDate {
@@ -280,14 +267,13 @@
                 }
             }
 
-
-
             .messageText {
-                margin: 0 0 15px 5px;
+                margin: 15px;
             }
 
             img {
                 width: 70px;
+                height: 50px;
                 border-radius: 25px;
                 margin-right: 15px;
                 align-self: center;
@@ -296,7 +282,7 @@
 
         .messageContent {
             align-content: center;
-
+        }
             .gifPosted {
                 margin: 25px auto 0;
                 width: 450px;
@@ -310,7 +296,6 @@
                 width: 200px;
                 margin: auto;
 
-
                 ul {
                     display: flex;
                     list-style: none;
@@ -321,12 +306,12 @@
                         font-size: 1.5em;
                         padding: 8px 20px;
 
-                        i {
+                        em {
                             padding: 5px;
                             color: white;
                             cursor: pointer;
 
-                            &::before {
+                            &:before {
                                 margin-right: 10px;
                                 transition: .5s;
 
@@ -345,15 +330,52 @@
                         .isActive::before {
                             color: red;
                         }
-
-
                     }
                 }
             }
 
+                .newComment {
+        background-color: #003A4D;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        margin: 5px;
+
+        .commentMessage {
+            margin: 10px;
+        }
+
+        .inputBloc {
+            display: flex;
+            flex-direction: column;
+
+            form {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                text-align: center;
+
+                label {
+                    margin-top: 15px;
+                }
+
+                button {
+                @include btn;
+                font-size: 1em;
+                }
+
+                textarea {
+                height: 50px;
+                margin: 20px 10px;
+                }
+            }
+        }
+
+    }
+
             .comments {
                 padding: 0 10px 20px;
-                margin: 10px;
+                margin: 5px auto ;
                 display: flex;
                 flex-direction: column;
                 background: #41636e;
@@ -361,8 +383,9 @@
                 flex-wrap: wrap;
                 width: 400px;
 
-                .authorDetails {
+                .commentAuthorDetails {
                     display: flex;
+                    margin: 5px;
 
                     .commentProfilePic {
                         width: 70px;
@@ -370,16 +393,14 @@
                         margin-right: 15px;
                         align-self: center;
                     }
-
-
                 }
 
-                .messageText {
-                    margin: 0;
+                .commentPost {
+                    margin: 0 15px;
                 }
             }
         }
-    }
+    
 
     .deleteComment {
         margin-left: auto;
@@ -391,69 +412,55 @@
         }
     }
 
-    .newMessage {
-        display: flex;
-        flex-direction: column;
-        align-self: center;
-        justify-content: center;
-        min-height: 50px;
-        margin: 5%;
-        position: fixed;
-        right: 0;
-        top: 50%;
-
-        div {
-            background: white;
-            border-radius: 10px;
-            box-shadow: -3px -3px 6px;
-            font-size: 16px;
-            font-weight: bold;
-            min-height: 100px;
-            text-align: center;
-
-            .sendMessage {
-                width: 100%;
-                border-radius: 10px 10px 0 0;
-                border: none;
-                border-bottom: 2px solid black;
-                min-height: 80px;
-                outline: none;
-                background: white;
-            }
-        }
-    }
-
     @media all and (max-width: 425px) {
 
+        .container {
+            margin-top: 20px;
+        }
+
         .message {
-            padding: 35px;
+            padding: 20px;
             margin: 20px auto;
 
             .messageHeader {
-                width: 85%;
                 margin-bottom: 10px;
+
+                .authorDetails {
+                    font-size: .8em;
+                }
             }
 
             .messageContent {
+                
                 .gifPosted {
-                    margin: 0;
-                    width: 95%;
+                    width: 350px;
                 }
 
                 .control {
-                    width: 350px;
+                    width: 300px;
                 }
 
                 .comments {
                     width: 85%;
 
-                    .messageText {
+                    .commentText {
                         margin-bottom: 10px;
                     }
                 }
             }
-
         }
 
+        .newComment {
+            .inputBloc {
+                form {
+                    display: flex;
+                    flex-direction: column;
+
+                    textarea {
+                        width: 90%;
+                    }
+                }
+            }
+        }
     }
 </style>
