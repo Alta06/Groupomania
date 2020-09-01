@@ -131,41 +131,7 @@
 
 <style lang="scss">
 
-  $bgButton : #03C3FF;
-  $bgButton2 : #1FC567;
 
-  @mixin button ($bgButton) {
-    transition: .4s;
-    margin-bottom: 30px;
-    border: none;
-    background-color: $bgButton;
-    width: 320px;
-    height: 60px;
-    border-radius: 8px;
-    color: white;
-    font-size: 2em;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-   #btnSubmit {
-    @include button($bgButton2);
-    
-    &:hover {
-            background-color: #14753e;
-        }
-  }
-
-  #goToConnect {
-    @include button($bgButton);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    &:hover {
-            background-color: #006483;
-        }
-  }
 
   .container {
     margin: 50px auto 50px;
@@ -259,7 +225,5 @@
     cursor: pointer;
   }
 
-  #btnSubmit {
-    @include button($bgButton)
-  }
+
 </style>

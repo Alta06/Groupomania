@@ -35,13 +35,8 @@ exports.createPost = (req, res, next) => {
 
     db.query(
 
-        `INSERT INTO Posts (userId, messages, date, url) VALUES (
-            ${db.escape(userId)},
-            ${db.escape(req.body.messages)},
-            ${db.escape(date)},
-            ${db.escape(image.imageUrl)}
-
-        )`,
+         `INSERT INTO Posts (userId, messages, date, url) VALUES (
+            ?,?,?,?)`, [userId, req.body.messages, date, image.imageUrl],
 
         (err, result) => {
 
@@ -89,7 +84,7 @@ exports.likePost = (req, res, next) => {
     const userId = decodedToken.userId;
 
     db.query(
-        `SELECT * FROM UsersLiked WHERE userId = ${db.escape(userId)} AND postLiked = ${db.escape(req.params.id)}`,
+        `SELECT * FROM UsersLiked WHERE userId = ? AND postLiked = ?`, [userId, req.params.id],
         (err, result) => {
             if (err) {
                 return res.status(501).send({
@@ -101,12 +96,12 @@ exports.likePost = (req, res, next) => {
             });
             if (result.length > 0) {
                 db.query(
-                    `DELETE FROM UsersLiked WHERE userId = ${db.escape(userId)} AND postLiked = ${db.escape(req.params.id)}`
+                    `DELETE FROM UsersLiked WHERE userId = ? AND postLiked = ?`, [userId, req.params.id],
                     
                 ), db.query(
                     `UPDATE Posts
                     SET likes = likes - 1
-                    WHERE ID = ${req.params.id}`
+                    WHERE ID = ?`, [req.params.id],
                 ),
                 (err, result) => {
                     if (err) {
@@ -121,14 +116,13 @@ exports.likePost = (req, res, next) => {
             } else {
                 db.query(
                         `INSERT INTO UsersLiked (userId, postLiked) VALUES (
-                            ${db.escape(userId)},
-                            ${db.escape(req.params.id)}
-                        )`),
+                            ?, ?)`, [userId, req.params.id]
+                            ),
 
                     db.query(
                         `UPDATE Posts
                              SET likes = likes + 1
-                             WHERE ID = ${req.params.id}`
+                             WHERE ID = ?`, [req.params.id]
                     ),
                     (err, result) => {
                         if (err) {
@@ -150,7 +144,7 @@ exports.getLikes = (req, res, next) => {
     const decodedToken = jwt.verify(token, `${process.env.sktdt}`);
     const userId = decodedToken.userId;
     db.query(
-        `SELECT * FROM UsersLiked WHERE userId = ${db.escape(userId)}`,
+        `SELECT * FROM UsersLiked WHERE userId = ?`, [userId],
         (err, result) => {
             if (err) {
                 res.status(500).send({
@@ -168,7 +162,7 @@ exports.getLikes = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
    
     db.query(
-        `SELECT url FROM Posts WHERE id = ${db.escape(req.params.id)}`,
+        `SELECT url FROM Posts WHERE id = ?`, [req.params.id],
         (err, result) => {
             if (err) {
                 res.status(500).send({
@@ -191,7 +185,7 @@ exports.deletePost = (req, res, next) => {
          LEFT JOIN usersLiked AS u
          ON u.postLiked = p.ID 
      
-        WHERE p.ID = ${db.escape(req.params.id)}`,
+        WHERE p.ID = ?`, [req.params.id],
         
          (err, result) => {
             if (err) {

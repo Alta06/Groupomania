@@ -10,7 +10,8 @@
                 <div class="messageContent">
                     <div class="control">
                         <label for="messages" id="sendLabel" name="messages">Ajoutez-y un message</label>
-                        <textarea v-model="messages" name="messages" id="messages" type="text"/>
+                        <textarea v-model="messages" name="messages" id="messages" type="text" />
+                        <em class="msg" v-if="msg"> {{msg}} </em>
                         <button @click="post" type="button" id="send">Envoyer</button>
                     </div>
                 </div>
@@ -27,7 +28,8 @@
         data() {
             return {
                 messages: "",
-                selectedFile: ""
+                selectedFile: "",
+                msg: ""
             };
         },
 
@@ -42,14 +44,22 @@
                     formData.append("file", this.selectedFile);
                     formData.append("messages", this.messages);
 
-                    const response =  PostService.createPost(formData).then(() => {
-                        this.msg = response;
+                    if (!formData.get("file")) {
+                        this.msg = "N'oubliez pas d'ajoutez un gif ou une image";
+
+                    } else {
+                        
+                        const response =  PostService.createPost(formData).then(() => {
+                        this.res = response;
                         
                     });
 
                     setTimeout(() => {
-                        this.$router.go()
+                        this.$router.go();
                     }, 100);
+                    }
+
+             
 
                 } catch (error) {
                     this.msg = error.response.data.msg;
@@ -65,28 +75,32 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 
- @mixin btn {
-        height: 50px;
-        width: 80px;
-        align-self: center;
-        margin: auto 0;
-        background-color: #1fc567;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        transition: .4s;
-        cursor: pointer;
-        font-size: 2em;
-        font-weight: bold;
+$principalClr: #005cb3;
 
-        &:hover {
-            background-color: #14753e;
-        }
-    }
+@mixin btn {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  color: #003A4D;
+  background: white;
+  font-size: 1.5em;
+  font-weight: bold;
+  transition: .4s ease-in-out;
+
+  &:hover {
+    box-shadow: inset #003d75 0px 0px 0px 50px;
+    color: white;
+  }
+}
 
     #addGif {
         border-radius: 10px;
-        background-color: #1fc567;
+        background-color: $principalClr;
         margin: auto;
     }
 
@@ -94,25 +108,31 @@
         color: #003a4d;
     }
 
+    .msg {
+        color: #003a4d;
+        margin: 10px;
+        font-weight: bold;
+    }
+
     .message {
+        width: 450px;
         padding: 50px 25px;
         color: white;
-        border-radius: 40px;
         background: white;
         margin: auto;
         
 
         .messageHeader {
-            padding: 10px 25px;
+            margin: auto;
+            padding: 25px;
             display: flex;
             flex-direction: column;
             background: #003a4d;
-            border-radius: 25px;
             width: 300px;
             margin-bottom: 25px;
 
             label {
-                margin: 10px auto;
+                margin: 0 auto 10px;
                 font-size: 1.2em;
             }
 
@@ -121,17 +141,6 @@
         .messageContent {
             margin: auto;
             align-content: center;
-
-            p {
-                margin: 50px;
-            }
-
-            img {
-                margin: 25px auto 0;
-                width: 450px;
-                border-radius: 15px;
-                border: 10px #003a4d solid;
-            }
 
             .control {
                 border-radius: 15px;
@@ -148,9 +157,9 @@
                 }
 
                 textarea {
+                    font-family: 'Lato', sans-serif;
                     padding: 15px;
                     height: 80px;
-                    border-radius: 10px;
                     border: 2px solid #003a4d;
                     height: 60%;
 
@@ -168,7 +177,9 @@
             }
 
         .message {
-            padding: 10px;
+            margin: auto;
+            width: 350px;
+            padding: 20px;
             right: 0;
             position: relative;
 

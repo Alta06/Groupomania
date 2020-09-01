@@ -23,7 +23,7 @@
 <script>
 
 export default {
-    
+
 name: 'sidebar',
 data () {
     return {
@@ -69,13 +69,12 @@ nav {
 
         li {
             padding: 50px;
-
             font-size: 2.5em;
 
             em {
                 width: 40px;
                 text-align: center;
-                border: solid black 3px;
+                border: solid black 0;
                 padding: 10px;
                 border-radius: 50px;
                 color: black;
@@ -86,10 +85,10 @@ nav {
 }
 
 @mixin hoverButton {
-    transition: .4s;
+    transform: scale(1.2);
     background-color: $bgColor;
     color: #fff;
-    box-shadow: 0 0 20px $bgColor;
+    box-shadow: 0 0 8px $bgColor;
 }
 
 .router-link-exact-active em {
@@ -103,12 +102,10 @@ nav {
 .admin:hover {
     @include hoverButton();
     cursor: pointer;
-    
-
 }
 
 .clock:hover {
-    @include hoverButton()
+    @include hoverButton();
 
 }
 
@@ -123,11 +120,13 @@ nav {
     nav {
         width: 100px;
         ul {
-          padding: 0;
+            li {
+                padding: 50px 0;
+            }
 
         }
         .two {
-            width: 170px;
+            width: 150px;
         }
     }
 }
@@ -137,8 +136,9 @@ nav {
         width: 50px;
 
         ul {
+            padding: 0;
             li {
-                padding: 50px 0 50px 5px;
+                padding: 50px 10px ;
 
                 em {
                     font-size: 0.7em;
@@ -160,7 +160,6 @@ nav {
     nav {
         width: 100%;
         display: flex;
-        flex-direction: row;
         min-height: 50px;
         bottom: 0;
         top: 91%;
@@ -171,7 +170,7 @@ nav {
             
             li {
                 font-size: 1.8em;
-                padding: 5px;
+                padding: 15px;
             }
         }
         .two {

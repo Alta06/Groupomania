@@ -7,8 +7,11 @@
                         alt="Photo de profil de l'utilisateur">
                     <img v-if="!post.profilePic" class="profilePic" src="../assets/anonymous.png"
                         alt="Photo de profil par défaut">
-                    <h2 href="#">{{post.firstName}} {{post.lastName}} </h2>
-                    <p class="postDate">{{format_date(post.date)}}</p>
+                    <div>
+                        <h2 href="#">{{post.firstName}} {{post.lastName}} </h2>
+                        <em class="postDate">{{format_date(post.date)}}</em>
+                    </div>
+
                     <em v-if="isPostAuthor(post)" @click="deletePost(post)"
                         class="far fa-times-circle deleteComment"></em>
 
@@ -23,11 +26,13 @@
                 <div class="control">
                     <ul>
                         <li>
-                            <em @click="showDiv(post)" class="comment far fa-comment-alt">{{post.comments}}</em>
+                            <em @click="showDiv(post)" class="comment fas fa-comment-alt"></em>
                         </li>
                         <li>
-                            <em @click="likeIt(post)" :class="liked?'fa':''"
-                                class="like far fa-heart">{{post.likes}}</em>
+                            <em @click="likeIt(post)" :class="liked?'fa':''" class="like fas fa-heart"></em>
+                        </li>
+                        <li class="nbLikes">
+                            {{post.likes}} j'aime(s)
                         </li>
                     </ul>
                 </div>
@@ -37,7 +42,8 @@
                         <form>
                             <label for="commentPost">Ecrivez un commentaire pour vos amis</label>
                             <textarea type="text" id="commentPost" v-model="message" />
-                            <button type="button" @click="newComment(post)">Envoyer</button>
+                            <p v-if="msg"> {{msg}} </p>
+                            <button type="button" id="sendComment" @click="newComment(post)">Envoyer</button>
                         </form>
 
                     </div>
@@ -46,7 +52,10 @@
                         <div v-if="comment.postId === post.id" class="comments">
                             <div class="commentAuthorDetails">
                                 <img class="commentProfilePic" :src="comment.profilePic" alt="">
-                                <h2 href="#">{{comment.firstName}} {{comment.lastName}}</h2>
+                                <div>
+                                    <h2 href="#">{{comment.firstName}} {{comment.lastName}}</h2>
+                                    <em class="commentDate">{{format_date(comment.date)}} </em>
+                                </div>
                                 <em v-if="isCommentAuthor(comment)" @click="deleteComment(comment)"
                                     class="far fa-times-circle deleteComment"></em>
 
@@ -162,12 +171,18 @@
                 formData.append("message", this.message);
                 formData.append("postId", postId);
 
-                const response = CommentService.commentPost(formData).then(() => {
+                if(formData.get("message") == "") {
+                    this.msg = "Vous ne pouvez pas envoyer de message vide"
+                } else {
+                    const response = CommentService.commentPost(formData).then(() => {
                     this.msg = response.msg
                 })
                 post.comments++;
                 this.comments = await CommentService.getAllComments();
                 this.message = "";
+                }
+
+              
             },
 
             async deleteComment(comment, index) {
@@ -210,45 +225,49 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-    @mixin btn {
-        transition: .4s;
-        height: 50px;
-        width: 180px;
-        align-self: center;
-        margin: 10px;
-        background-color: #1fc567;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        transition: .4s;
-        cursor: pointer;
 
-        &:hover {
-            background-color: #14753e;
-        }
-    }
+
+@mixin btn {
+  display: flex;
+  margin: 15px auto;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  color: #003A4D;
+  background: white;
+  font-size: 1.5em;
+  font-weight: bold;
+  transition: .4s ease-in-out;
+
+  &:hover {
+    box-shadow: inset #003d75 0px 0px 0px 50px;
+    color: white;
+  }
+}
 
     .fa:before {
         color: red;
     }
 
     .container {
-        margin: 50px auto;
+        margin: auto;
     }
 
     .message {
         padding: 50px 25px 0;
         color: white;
-        border-radius: 40px;
         background: white;
-        margin: 50px auto;
+        margin: 50px auto 0px;
 
         .messageHeader {
             padding: 10px 25px;
             display: flex;
             flex-direction: column;
             background: #003A4D;
-            border-radius: 25px;
+            width: 400px;
             flex-wrap: wrap;
 
 
@@ -259,22 +278,20 @@
                     text-align: start;
                     font-size: 1.3em;
                     flex: 1;
+                    margin: 5px;
                 }
 
                 .postDate {
-                    margin: 10px;
+                    margin: 5px;
                     align-self: center;
                 }
             }
 
-            .messageText {
-                margin: 15px;
-            }
+            
 
             img {
                 width: 70px;
                 height: 50px;
-                border-radius: 25px;
                 margin-right: 15px;
                 align-self: center;
             }
@@ -286,35 +303,26 @@
             .gifPosted {
                 margin: 25px auto 0;
                 width: 450px;
-                border-radius: 15px;
-                border: 10px #003A4D solid;
             }
 
             .control {
-                background: #003A4D;
-                border-radius: 15px;
-                width: 200px;
-                margin: auto;
-
+                
                 ul {
                     display: flex;
                     list-style: none;
-                    justify-content: center;
+                    justify-content: left;
                     padding: 0;
 
                     li {
                         font-size: 1.5em;
-                        padding: 8px 20px;
 
                         em {
-                            padding: 5px;
-                            color: white;
+                            color: #003A4D;
                             cursor: pointer;
 
                             &:before {
                                 margin-right: 10px;
                                 transition: .5s;
-
                             }
                         }
 
@@ -326,77 +334,91 @@
 
                             color: red;
                         }
+                    }
 
-                        .isActive::before {
-                            color: red;
-                        }
+                    .nbLikes {
+                        color: #003A4D;
+                        margin-left: auto;
+                        font-size: 1.2em;
                     }
                 }
             }
 
                 .newComment {
-        background-color: #003A4D;
-        border-radius: 15px;
-        display: flex;
-        flex-direction: column;
-        margin: 5px;
-
-        .commentMessage {
-            margin: 10px;
-        }
+                    display: flex;
+                    flex-direction: column;
+                    margin: 5px;
+                    color: #003A4D;
 
         .inputBloc {
             display: flex;
             flex-direction: column;
+
 
             form {
                 display: flex;
                 flex-direction: column;
                 width: 100%;
                 text-align: center;
+                align-items: center;
 
                 label {
                     margin-top: 15px;
                 }
 
-                button {
+                #sendComment {
                 @include btn;
-                font-size: 1em;
+                font-size: 1.6em;
                 }
 
                 textarea {
-                height: 50px;
-                margin: 20px 10px;
+                    margin: auto;
+                    max-width: 400px;
+                    min-width: 400px;
+                    min-height: 50px;
+                    max-height: 400px;
+                    margin: 20px 10px;
+                    font-family: 'Lato', sans-serif;
                 }
             }
         }
-
     }
 
             .comments {
-                padding: 0 10px 20px;
+                padding: 5px 10px;
                 margin: 5px auto ;
                 display: flex;
                 flex-direction: column;
-                background: #41636e;
-                border-radius: 25px;
+                background: #003A4D;
+                color: white;
                 flex-wrap: wrap;
                 width: 400px;
 
                 .commentAuthorDetails {
                     display: flex;
                     margin: 5px;
+                    font-size: 0.8em;
 
                     .commentProfilePic {
-                        width: 70px;
-                        border-radius: 25px;
+                        width: 60px;
                         margin-right: 15px;
+                        align-self: center;
+                    }
+
+                    h2 {
+                        margin: 5px;
+                    }
+
+                    .commentDate {
+                        font-size: .8em;
+                        
+                        margin: 5px ;
                         align-self: center;
                     }
                 }
 
-                .commentPost {
-                    margin: 0 15px;
+                .commentText {
+                    margin: 5px;
                 }
             }
         }
@@ -406,6 +428,7 @@
         margin-left: auto;
         cursor: pointer;
         align-self: center;
+        
 
         &:hover {
             color: red;
@@ -423,6 +446,7 @@
             margin: 20px auto;
 
             .messageHeader {
+                width: 300px;
                 margin-bottom: 10px;
 
                 .authorDetails {
@@ -431,20 +455,27 @@
             }
 
             .messageContent {
+
+                width: min-content;
                 
                 .gifPosted {
                     width: 350px;
                 }
 
-                .control {
-                    width: 300px;
-                }
-
                 .comments {
                     width: 85%;
 
+                    .commentAuthorDetails {
+
+                        align-items: center;
+
+                        h2 {
+                            font-size: 1em;
+                        }
+                    }
+
                     .commentText {
-                        margin-bottom: 10px;
+                        font-size: .8em;
                     }
                 }
             }
@@ -456,9 +487,17 @@
                     display: flex;
                     flex-direction: column;
 
-                    textarea {
-                        width: 90%;
+                    #commentPost {
+                        min-width: 300px;
+                        max-width: 300px;
+                        margin: 10px auto;
                     }
+
+                    #sendComment {
+                        font-size: 1.2em;
+                    }
+
+                    
                 }
             }
         }

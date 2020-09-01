@@ -153,6 +153,9 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+
+$principalClr: #005cb3;
+
     @mixin btn {
         border-radius: 5px;
         border: none;
@@ -160,6 +163,8 @@
         font-size: 0.9em;
         font-weight: bold;
         color: white;
+        transition: .4s;
+
     }
 
     .singlePost {
@@ -236,27 +241,34 @@
 
     .btn {
         @include btn;
+        &:hover {
+            transform: scale(1.1);
+        }
+
 
         &-delete {
             margin: auto;
             background: red;
             width: 100%;
+
+            
         }
         
         &-deleteComment {
                 margin: auto;
                 background: red;
-                width: 100%;
-                height: 20px;
+                width: 90%;
+                height: 25px;
+
             }
 
         &-seeGif,
         &-seeComment {
-            background: #1fc567;
+            background: $principalClr;
         }
 
         &-edit {
-            background: rgb(23, 162, 255);
+            background: red;
         }
 
     }

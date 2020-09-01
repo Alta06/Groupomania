@@ -1,7 +1,7 @@
 const db = require('../db')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
+const fs = require('fs');
 
 exports.signUp = (req, res, next) => {
     const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -21,10 +21,7 @@ exports.signUp = (req, res, next) => {
 
                     db.query(
                         `INSERT INTO Members (firstName, lastName, email, password) VALUES (
-                                    ${db.escape(firstName)},
-                                    ${db.escape(lastName)},
-                                    ${db.escape(email)},
-                                    ${db.escape(hash)})`,
+                                    ?, ?, ?, ?)`, [firstName, lastName, email, hash],
 
                         (error, result) => {
                             if (error) {
@@ -125,11 +122,9 @@ exports.getInfo = (req, res, next) => {
 exports.updateUser = (req, res, next) => {
     if (req.files) {
      
-    // accessing the file
     const myFile = req.files.file;
     const newName = Date.now() + '-' + myFile.name;
 
-    //  mv() method places the file inside image directory
     myFile.mv(`images/profilePic/${newName}`, function (err) {
         if (err) {
             console.log(err)
@@ -190,10 +185,10 @@ exports.updateUser = (req, res, next) => {
             employement=IF(LENGTH(?)=0, employement, ?),
             birthday=IF(LENGTH(?)=0, birthday, ?)
 
-            WHERE id=${db.escape(userId)}
+            WHERE id=?
                 `, [req.body.firstName, req.body.firstName, req.body.lastName, req.body.lastName,
                     req.body.email, req.body.email, req.body.inCompanySince, req.body.inCompanySince,
-                    req.body.employement, req.body.employement, req.body.birthday, req.body.birthday],
+                    req.body.employement, req.body.employement, req.body.birthday, req.body.birthday, userId],
                 (error, result) => {
                     if (error) {
                         res.send({
@@ -217,19 +212,56 @@ exports.deleteUser = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(token, `${process.env.sktdt}`);
     const userId = decodedToken.userId;
+
     db.query(
-        `DELETE FROM Members WHERE id=?`,[userId],
+        `SELECT profilePic FROM Members WHERE id = ?`, [userId],
         (err, result) => {
             if (err) {
-                return res.status(500).send({
-                    err: err
-                });
-            } else {
-                return res.status(200).send({
-                    msg: "Compte détruit",
-                    result
+                res.send({
+                    "code": 400,
+                    "message": "erreur"
                 })
             }
+            if (result[0].profilePic == null) {
+
+                db.query(
+                    `DELETE FROM Members WHERE id=?`,[userId],
+                    (err, result) => {
+                        if (err) {
+                             res.status(500).send({
+                                err: err
+                            });
+                        } else {
+                             res.status(200).send({
+                                msg: "Compte détruit",
+                                result
+                            })
+                        }
+                    }
+
+                )} else {
+
+                let imageUrl = result[0].profilePic;
+                let fileName = imageUrl.split('/images/profilePic')[1];
+                fs.unlink(`images/profilePic` + fileName, () => {});
+
+                db.query(
+                    `DELETE FROM Members WHERE id=?`,[userId],
+                    (err, result) => {
+                        if (err) {
+                            return res.status(500).send({
+                                err: err
+                            });
+                        } else {
+                            return res.status(200).send({
+                                msg: "Compte détruit",
+                                result
+                            })
+                        }
+                    }
+                )
+    
+            }
+     
         }
-    )
-}
+    )}

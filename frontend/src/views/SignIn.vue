@@ -22,17 +22,17 @@
       </div>
 
       <button @click="login" type="button" id="btnSubmit">Connexion</button>
-      <div>
+      <div class="notSignedIn">
 
         <h3>Pas encore inscrit ?</h3>
-        <router-link to="SignUp" id="createAccountBtn">Je crée un compte</router-link>
+        <router-link to="SignUp" id="createAccount">Je crée un compte</router-link>
 
       </div>
     </form>
 
     <div v-if="token" class="ifConnected">
       <h2>Vous êtes connecté</h2>
-      <a class="button" id="disconnectBtn" @click="logout" href="#">Déconnexion</a>
+      <button class="button" id="disconnectBtn" @click="logout" href="#">Déconnexion</button>
 
     </div>
 
@@ -127,57 +127,46 @@
 
 <style lang="scss">
 
-  $bgButton : #03C3FF;
-  $bgButton2 : #1FC567;
+$principalClr: #005cb3;
 
-  @mixin button ($bgButton) {
-    transition: .4s;
-    margin-bottom: 30px;
-    border: none;
-    background-color: $bgButton;
-    width: 320px;
-    height: 60px;
-    border-radius: 8px;
+@mixin btn {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  color: #003A4D;
+  font-size: 1.5em;
+  font-weight: bold;
+  transition: .4s ease-in-out;
+
+  &:hover {
+    box-shadow: inset #003d75 0px 0px 0px 50px;
     color: white;
-    font-size: 2em;
-    font-weight: bold;
-    cursor: pointer;
   }
+}
 
-  #createAccountBtn {
-    @include button($bgButton2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    &:hover {
-            background-color: #14753e;
-        }
-  }
+#btnSubmit {
+  @include btn;
+}
 
-  #btnSubmit {
-    @include button($bgButton);
-
-    &:hover {
-            background-color: #006483;
-        }
-  }
+.notSignedIn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
   .ifConnected {
 
-   margin: 25% 0;
-
     #disconnectBtn {
-      @include button(red);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    margin: auto;
-    border: none;
-     &:hover {
-            background-color: rgb(109, 0, 0);
-        }
+      @include btn; 
+
+      &:hover {
+    box-shadow: inset red 0px 0px 10px 50px;
+  }   
     }
   }
 

@@ -8,57 +8,59 @@
 
       <div v-if="isHidden">
 
-      <form enctype="multipart/form-data" class="details" v-for="detail in member" :key="detail.firstName" >
+        <form enctype="multipart/form-data" class="details" v-for="detail in member" :key="detail.firstName">
 
-        <img v-if="detail.profilePic" class="profilePic" :src="detail.profilePic" alt="Photo de profil de l'utilisateur" />
-        <img v-if="!detail.profilePic" class="profilePic" src="../assets/anonymous.png" alt="Photo de profil par défaut" />
+          <img v-if="detail.profilePic" class="profilePic" :src="detail.profilePic"
+            alt="Photo de profil de l'utilisateur" />
+          <img v-if="!detail.profilePic" class="profilePic" src="../assets/anonymous.png"
+            alt="Photo de profil par défaut" />
 
-        <input type="file" @change="onFileChange" id="addPic" name="addPic"
-          accept="image/jpg, image/png, image/jpeg" />
+          <input type="file" @change="onFileChange" id="addPic" name="addPic"
+            accept="image/jpg, image/png, image/jpeg" />
 
-          <h3 v-if="isHidden">Remplissez les champs que vous souhaitez modifiez</h3>
+          <h3 v-if="isHidden">Cliquez sur les champs que vous souhaitez modifiez</h3>
 
-        <div class="group">
-          <input v-model="firstName" type="text" name="firstName" id="firstName"  />
-          <label for="firstName">Prénom : {{detail.firstName}}</label>
-        </div>
+          <div class="group">
+            <input v-model="firstName" type="text" name="firstName" id="firstName" required />
+            <label for="firstName">Prénom : {{detail.firstName}}</label>
+          </div>
 
-        <div class="group">
-          <input v-model="lastName" type="text" name="lastName" id="lastName"/>
-          <label for="lastName">Nom : {{detail.lastName}}</label>
-        </div>
+          <div class="group">
+            <input v-model="lastName" type="text" name="lastName" id="lastName" required />
+            <label for="lastName">Nom : {{detail.lastName}}</label>
+          </div>
 
-        <div class="group">
-          <input v-model="birthday" type="date" name="birthday" id="birthday" />
-          <label for="birthday">Date de naissance : {{format_date(detail.birthday)}}</label>
-        </div>
+          <div class="group">
+            <input v-model="birthday" type="date" name="birthday" id="birthday" />
+            <label for="birthday">Date de naissance : {{format_date(detail.birthday)}}</label>
+          </div>
 
-        <div class="group">
-          <input v-model="employement" type="text" name="employement" id="employement"/>
-          <label for="employement">Poste : {{detail.employement}}</label>
-        </div>
+          <div class="group">
+            <input v-model="employement" type="text" name="employement" id="employement" required />
+            <label for="employement">Poste : {{detail.employement}}</label>
+          </div>
 
-        <div class="group">
-          <input v-model="inCompanySince" type="date" name="inCompanySince" id="inCompanySince" />
-          <label for="inCompanySince">Date d'entrée dans l'entreprise : {{format_date(detail.inCompanySince)}}</label>
-        </div>
+          <div class="group">
+            <input v-model="inCompanySince" type="date" name="inCompanySince" id="inCompanySince" />
+            <label for="inCompanySince">Dans l'entreprise depuis : {{format_date(detail.inCompanySince)}}</label>
+          </div>
 
-        <div class="group">
-          <input v-model="email" type="text" name="email" id="email"/>
-          <label for="email">Adresse email : {{detail.email}}</label>
-        </div>
+          <div class="group">
+            <input v-model="email" type="text" name="email" id="email" required />
+            <label for="email">Adresse email : {{detail.email}}</label>
+          </div>
 
-                  <p v-if="errorMsg"> {{errorMsg}} </p>
-                  <p v-if="successMsg"> {{successMsg}} </p>
+          <p v-if="errorMsg"> {{errorMsg}} </p>
+          <p v-if="successMsg"> {{successMsg}} </p>
 
 
 
-        <div v-if="detail.isAdmin" :style="{'color':'red'}">
-          <p>Cet utilisateur est administrateur</p>
-        </div>
-      </form>
+          <div v-if="detail.isAdmin" :style="{'color':'red'}">
+            <p>Cet utilisateur est administrateur</p>
+          </div>
+        </form>
 
-</div>
+      </div>
       <a class="btn" @click="isHidden = !isHidden" href="#">Gérer le compte</a>
       <a v-if="isHidden" class="btn" @click="edit" href="#">Confirmer les changements</a>
       <a v-if="isHidden" class="btn btn-red" @click="deleteUser" href="#">Supprimer le compte</a>
@@ -154,6 +156,24 @@
 </script>
 
 <style scoped lang="scss">
+  $principalClr: #005cb3;
+
+  @mixin btn {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    height: 50px;
+    color: white;
+    background: $principalClr;
+    border-radius: 5px;
+    font-size: 1.6em;
+    font-weight: bolder;
+    margin: 8px auto;
+    width: 320px;
+  }
+
   /* form starting stylings ------------------------------- */
 
   .details {
@@ -167,12 +187,12 @@
     margin-bottom: 45px;
 
     input {
-      font-size: 18px;
-      padding: 10px 10px 10px 5px;
-      width: 300px;
+      font-size: 1.2em;
+      padding: 5px 5px 5px 0;
+      width: 350px;
       border: none;
       border-bottom: 1px solid #ffffff;
-      background: #01698b;
+      background: #003A4D;
       color: white;
     }
 
@@ -183,7 +203,7 @@
     /* LABEL ======================================= */
     label {
       color: rgb(255, 255, 255);
-      font-size: 18px;
+      font-size: 1em;
       font-weight: normal;
       position: absolute;
       pointer-events: none;
@@ -196,13 +216,11 @@
     input:focus~label,
     input:valid~label {
       top: -20px;
-      font-size: 14px;
+      font-size: 1.2em;
       color: #ffffff;
     }
 
   }
-
-
 
   .container {
     display: flex;
@@ -210,29 +228,20 @@
     color: #fff;
 
     .btn {
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-decoration: none;
-      height: 50px;
-      color: white;
-      background: #1fc567;
-      border-radius: 5px;
-      font-size: 1.6em;
-      font-weight: bolder;
-      margin: 8px auto;
-      width: 320px;
+      @include btn;
+      transition: .4s;
 
       &:hover {
-        background-color: #14753e;
+        transform: scale(1.05);
+        box-shadow: #003d75 0px 0px 10px 8px;
       }
 
       &-red {
         background-color: red;
 
         &:hover {
-          background-color: rgb(121, 1, 1);
+          box-shadow: #740000 0px 0px 8px 5px;
+
         }
       }
     }
@@ -243,7 +252,8 @@
       border-radius: 15px;
     }
 
-    h2, h3 {
+    h2,
+    h3 {
       text-align: center;
     }
 

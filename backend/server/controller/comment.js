@@ -5,22 +5,20 @@ exports.commentPost = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(token, `${process.env.sktdt}`);
     const userId = decodedToken.userId;
+    const date = new Date().toLocaleString();
+
 
     db.query(
-            `INSERT INTO Comments (userId, message, postId) VALUES (
-            ${db.escape(userId)},
-            ${db.escape(req.body.message)},
-            ${db.escape(req.body.postId)})
-        `
+            `INSERT INTO Comments (userId, message, postId, date) VALUES (
+            ?, ?, ?, ?)`, [userId, req.body.message, req.body.postId, date]
         ),
         
-
         db.query(
             ` UPDATE Posts 
         SET comments = comments + 1
 
-        WHERE id = ${db.escape(req.body.postId)}
-`,
+        WHERE id = ?`, [req.body.postId],
+
             (err, result) => {
                 if (err) {
                     return res.status(400).send({
@@ -37,7 +35,7 @@ exports.commentPost = (req, res, next) => {
 
 exports.getAllComments = (req, res, next) => {
     db.query(
-        `SELECT Comments.id, message, Comments.userId, firstName, lastName, profilePic, postId
+        `SELECT Comments.id, message, Comments.userId, firstName, lastName, profilePic, postId, date
         FROM Comments
         INNER JOIN Members
         ON Comments.userId = Members.id
@@ -61,7 +59,7 @@ exports.getAllComments = (req, res, next) => {
 
 exports.deleteComment = (req, res, next) => {
     db.query(
-        `DELETE FROM Comments WHERE id= ${db.escape(req.params.commentId)}`,
+        `DELETE FROM Comments WHERE id= ?`, [req.params.commentId],
 
         (err, result) => {
             if (err) {
@@ -81,7 +79,7 @@ exports.deleteComment = (req, res, next) => {
         `Update Posts 
         SET comments = comments - 1
         
-        WHERE id = ${db.escape(req.params.postId)}`
+        WHERE id = ?`, [req.params.postId]
     ),
     (err, result) => {
         if (err) {
