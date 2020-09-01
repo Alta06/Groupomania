@@ -105,7 +105,7 @@
             
             e.preventDefault();
           } else if (!this.password.match(passRegex)) {
-            this.msg = "Le mot de passe n'est pas assez sécurisé";
+            this.msg = "Le mot de passe n'est pas assez sécurisé: Au moins 8 caractères, une majuscule, un chiffre, un caractère spécial.";
             e.preventDefault();
           } 
           
@@ -130,7 +130,29 @@
 </script>
 
 <style lang="scss">
+@mixin btn {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  color: #003A4D;
+  font-size: 1.5em;
+  font-weight: bold;
+  transition: .4s ease-in-out;
 
+  &:hover {
+    box-shadow: inset #003d75 0px 0px 0px 50px;
+    color: white;
+  }
+}
+
+#btnSubmit {
+  @include btn;
+}
 
 
   .container {
@@ -159,6 +181,7 @@
     align-items: center;
 
     .errorMsg {
+      width: 50%;
       border-radius: 15px;
       margin: 0 0 50px;
       padding: 10px;

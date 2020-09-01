@@ -31,12 +31,5 @@
 </script>
 
 <style lang="scss">
-  @media all and (max-width: 425px) {
-
-   
-    header {
-      display: none;
-    }
-
-  }
+  
 </style>

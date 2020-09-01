@@ -1,40 +1,40 @@
 <template>
-        <section class="singlePost">
+    <section class="singlePost">
 
-            <div class="author">
+        <div class="author">
 
-                <h2 class="authorName">{{post.firstName}} {{post.lastName}}</h2>
-                <p class="postdate">{{format_date(post.date)}}</p>
+            <h2 class="authorName">{{post.firstName}} {{post.lastName}}</h2>
+            <p class="postdate">{{format_date(post.date)}}</p>
+        </div>
+        <div class="postContent">
+            <div class="messageContent">
+                <p class="messageText"> {{post.messages}} </p>
+                <img v-if="seeGif" class="gifPosted" :src="post.url" alt="Gif envoyé par l'utilisateur">
             </div>
-            <div class="postContent">
-                <div class="messageContent">
-                    <p class="messageText"> {{post.messages}} </p>
-                    <img v-if="seeGif" class="gifPosted" :src="post.url" alt="Gif envoyé par l'utilisateur">
-                </div>
 
-                <div class="allComments" v-if="seeComments">
-                    <div v-for="(comment, index) in comments" :key="index">
-                        <div class="comment" v-if="comment.postId === post.id">
-                            <h3 class="commentAuthor"> {{comment.firstName}} {{comment.lastName}} </h3>
-                            <p class="commentMessage"> {{comment.message}} </p>
-                            <button v-if="edit" @click="deleteComment(comment)"
-                                class="btn btn-deleteComment">Supprimer</button>
-                        </div>
-
+            <div class="allComments" v-if="seeComments">
+                <div v-for="(comment, index) in comments" :key="index">
+                    <div class="comment" v-if="comment.postId === post.id">
+                        <h3 class="commentAuthor"> {{comment.firstName}} {{comment.lastName}} </h3>
+                        <p class="commentMessage"> {{comment.message}} </p>
+                        <button v-if="edit" @click="deleteComment(comment)"
+                            class="btn btn-deleteComment">Supprimer</button>
                     </div>
+
                 </div>
             </div>
+        </div>
 
 
-            <div class="adminController">
-                <button class="btn btn-seeGif" @click="seeGif = !seeGif">Voir le gif</button>
-                <button class="btn btn-edit" @click="edit = !edit">Modérer</button>
-                <button class="btn btn-seeComment" @click="seeComments = !seeComments">Voir les commentaires</button>
+        <div class="adminController">
+            <button class="btn btn-seeGif" @click="seeGif = !seeGif">Voir le gif</button>
+            <button class="btn btn-edit" @click="edit = !edit">Modérer</button>
+            <button class="btn btn-seeComment" @click="seeComments = !seeComments">Voir les commentaires</button>
 
-            </div>
-            <button v-if="edit" class="btn btn-delete" @click="deletePost(post)">Supprimer le post</button>
+        </div>
+        <button v-if="edit" class="btn btn-delete" @click="deletePost(post)">Supprimer le post</button>
         <hr>
-        </section>
+    </section>
 
 </template>
 
@@ -153,24 +153,32 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-
-$principalClr: #005cb3;
+    $principalClr: #005cb3;
 
     @mixin btn {
-        border-radius: 5px;
+        display: flex;
+        margin: 15px auto;
+        justify-content: center;
+        align-items: center;
+        width: 250px;
+        height: 50px;
         border: none;
-        width: 115px;
-        font-size: 0.9em;
+        cursor: pointer;
+        color: #003A4D;
+        background: white;
+        font-size: 1.3em;
         font-weight: bold;
-        color: white;
-        transition: .4s;
+        transition: .4s ease-in-out;
 
+        &:hover {
+            box-shadow: inset #003d75 0px 0px 0px 50px;
+            color: white;
+        }
     }
 
     .singlePost {
         color: white;
         padding: 10px;
-        border-radius: 25px;
         margin-top: 50px;
     }
 
@@ -180,15 +188,12 @@ $principalClr: #005cb3;
 
         .profilePic {
             width: 70px;
-            border-radius: 15px;
         }
 
         .authorName {
             font-size: 1em;
             align-self: center;
         }
-
-
     }
 
     .postContent {
@@ -198,12 +203,11 @@ $principalClr: #005cb3;
 
         .messageContent {
             width: 50%;
-            text-align: center;
+            margin: 20px;
         }
 
         .gifPosted {
             width: 200px;
-            border-radius: 10px;
         }
 
         .allComments {
@@ -212,20 +216,19 @@ $principalClr: #005cb3;
             height: 250px;
             width: 50%;
             overflow: scroll;
+            margin: 20px;
         }
 
         .comment {
-            border-radius: 10px;
-            padding: 5px;
+            padding-top: 5px;
             display: flex;
             flex-direction: column;
-            margin-bottom: 5px;
+            margin: 5px;
             background: #41636e;
         }
 
         .commentAuthor {
-            margin: 0;
-
+            margin: 5px;
         }
 
         .commentMessage {
@@ -241,167 +244,62 @@ $principalClr: #005cb3;
 
     .btn {
         @include btn;
-        &:hover {
-            transform: scale(1.1);
-        }
 
-
-        &-delete {
-            margin: auto;
-            background: red;
-            width: 100%;
-
-            
-        }
-        
+        &-delete,
         &-deleteComment {
-                margin: auto;
-                background: red;
-                width: 90%;
-                height: 25px;
+            width: 98%;
+            height: 40px;
+
+            &:hover {
+                box-shadow: inset red 0px 0px 0px 50px;
 
             }
-
-        &-seeGif,
-        &-seeComment {
-            background: $principalClr;
-        }
-
-        &-edit {
-            background: red;
-        }
-
-    }
-
-    @media all and (min-width: 768px) {
-        @mixin btn {
-            font-size: 1.2em;
-            cursor: pointer;
-        }
-
-            .postContent {
-        display: flex;
-        justify-content: space-between;
-        margin: auto;
-
-        .messageContent {
-            width: 50%;
-            text-align: start;
-        }
-
-        .gifPosted {
-            width: 350px;
-            border-radius: 10px;
-        }
-
-        .allComments {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .comment {
-            border-radius: 10px;
-            padding: 5px;
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 5px;
-            background: #41636e;
-        }
-
-        .commentAuthor {
-            margin: 0;
-
-        }
-
-        .commentMessage {
-            margin: 5px;
         }
     }
+
+    @media all and (max-width: 1024px) {
         .btn {
-            @include btn;
-        
+            width: 180px;
 
-            &-delete {
-                margin: auto;
-                background: red;
-                width: 100%;
-                height: 40px;
-            }
-
-            &-seeGif,
-        &-seeComment {
-            width: 150px;
-        }
-
-        }
-    }
-
-    @media all and (width: 768px) {
-             .postContent {
-        display: flex;
-        justify-content: space-between;
-        margin: auto;
-
-        .messageContent {
-            width: 50%;
-            text-align: start;
-        }
-
-        .gifPosted {
-            width: 250px;
-            border-radius: 10px;
-        }
-
-        .allComments {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .comment {
-            border-radius: 10px;
-            padding: 5px;
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 5px;
-            background: #41636e;
-        }
-
-        .commentAuthor {
-            margin: 0;
-
-        }
-
-        .commentMessage {
-            margin: 5px;
-        }
-    }
-
-       .btn {
-        @include btn;
-        font-size: 1em;
-
-        &-delete {
-            margin: auto;
-            background: red;
-            width: 100%;
-        }
-        
+            &-delete,
         &-deleteComment {
-                margin: auto;
-                background: red;
-                width: 100%;
-                height: 20px;
+            width: 98%;
+            height: 40px;
+
+        }
+        }
+    }
+
+
+
+    @media all and (max-width: 425px) {
+        .postContent {
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+
+            .allComments {
+                display: flex;
+                flex-direction: column;
+                width: 90%;
             }
 
-        &-seeGif,
-        &-seeComment {
-            background: #1fc567;
+            .messageContent {
+                width: 90%;
+                text-align: start;
+            }
         }
 
-        &-edit {
-            background: rgb(23, 162, 255);
-        }
+         .btn {
+             font-size: 1em;
+            width: 112px;
 
-    }
+            &-delete,
+        &-deleteComment {
+            width: 98%;
+            height: 40px;
+
+        }
+        }
     }
 </style>

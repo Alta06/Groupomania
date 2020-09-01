@@ -106,6 +106,14 @@
       this.member = await AuthService.getInfo();
     },
 
+    computed: {
+
+      updateUser() {
+        return this.member
+      }
+
+    },
+
     methods: {
       async edit() {
         try {
@@ -117,9 +125,12 @@
           formData.append("email", (this.email).toLowerCase());
           formData.append("inCompanySince", this.inCompanySince);
           formData.append("employement", this.employement);
+          
 
           const response = await AuthService.updateUser(formData)
           this.successMsg = response;
+
+          this.$router.go();
 
         } catch (error) {
           this.errorMsg = error;
@@ -158,21 +169,27 @@
 <style scoped lang="scss">
   $principalClr: #005cb3;
 
-  @mixin btn {
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    height: 50px;
+@mixin btn {
+  display: flex;
+  margin: 15px auto;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  color: #003A4D;
+  background: white;
+  font-size: 1.2em;
+  font-weight: bold;
+  transition: .4s ease-in-out;
+  text-decoration: none;
+
+  &:hover {
+    box-shadow: inset #003d75 0px 0px 0px 50px;
     color: white;
-    background: $principalClr;
-    border-radius: 5px;
-    font-size: 1.6em;
-    font-weight: bolder;
-    margin: 8px auto;
-    width: 320px;
   }
+}
 
   /* form starting stylings ------------------------------- */
 
@@ -229,18 +246,10 @@
 
     .btn {
       @include btn;
-      transition: .4s;
-
-      &:hover {
-        transform: scale(1.05);
-        box-shadow: #003d75 0px 0px 10px 8px;
-      }
 
       &-red {
-        background-color: red;
-
         &:hover {
-          box-shadow: #740000 0px 0px 8px 5px;
+              box-shadow: inset red 0px 0px 0px 50px;
 
         }
       }

@@ -158,6 +158,7 @@ $principalClr: #005cb3;
 
                 textarea {
                     font-family: 'Lato', sans-serif;
+                    font-size: 1.2em;
                     padding: 15px;
                     height: 80px;
                     border: 2px solid #003a4d;

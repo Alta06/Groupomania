@@ -12,7 +12,7 @@ exports.commentPost = (req, res, next) => {
             `INSERT INTO Comments (userId, message, postId, date) VALUES (
             ?, ?, ?, ?)`, [userId, req.body.message, req.body.postId, date]
         ),
-        
+
         db.query(
             ` UPDATE Posts 
         SET comments = comments + 1
@@ -21,12 +21,14 @@ exports.commentPost = (req, res, next) => {
 
             (err, result) => {
                 if (err) {
-                    return res.status(400).send({
-                        msg: err
+                     res.send({
+                         "code": 400,
+                         "message": err
                     });
                 }
-                return res.status(201).send({
-                    msg: 'Post commenté et nombre de comm incrémenté de 1 !!',
+                 res.send({
+                     "code": 201,
+                     "message": 'Post commenté et nombre de comm incrémenté de 1 !!',
                     result
                 })
             }
@@ -43,55 +45,59 @@ exports.getAllComments = (req, res, next) => {
       `,
         (err, result) => {
             if (err) {
-                return res.status(400).send({
-                    msg: err
+                return res.send({
+                    "code": 400,
+                    "message": err
                 });
             }
-            return res.status(201).send({
-                msg: 'Voila les commentaires',
+            return res.send({
+                "code": 200,
+                "message": 'Voila les commentaires',
                 result
 
             })
         }
-
     )
 }
 
 exports.deleteComment = (req, res, next) => {
     db.query(
-        `DELETE FROM Comments WHERE id= ?`, [req.params.commentId],
+            `DELETE FROM Comments WHERE id= ?`, [req.params.commentId],
 
+            (err, result) => {
+                if (err) {
+                    res.send({
+                        "code": 400,
+                        "message": err
+                    });
+                }
+
+                res.send({
+                    "code": 201,
+                    result
+                })
+            }
+        )
+
+        db.query(
+            `Update Posts 
+        SET comments = comments - 1
+        
+        WHERE id = ?`, [req.params.postId]
+        ),
         (err, result) => {
             if (err) {
-                 res.status(400).send({
-                    msg: err
+                res.send({
+                    "code": 400,
+                    "message": err
                 });
             }
-            
-             res.status(201).send({
+
+            res.send({
+                "code": 200,
+                "message": 'Commentaire supprimé',
                 result
 
             })
         }
-    ),
-
-    db.query(
-        `Update Posts 
-        SET comments = comments - 1
-        
-        WHERE id = ?`, [req.params.postId]
-    ),
-    (err, result) => {
-        if (err) {
-             res.status(400).send({
-                msg: err
-            });
-        }
-        
-         res.status(201).send({
-            msg: 'Commentaire supprimé',
-            result
-
-        })
-    }
 }

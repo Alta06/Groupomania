@@ -44,13 +44,5 @@
     margin: auto 0 0 auto;
 }
 }
-  @media all and (max-width: 425px) {
 
-   
-    header {
-      display: none;
-    }
-    
-
-  }
 </style>

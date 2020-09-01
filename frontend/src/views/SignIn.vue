@@ -182,8 +182,6 @@ $principalClr: #005cb3;
     margin: 35px 0;
   }
 
-  /* form starting stylings ------------------------------- */
-
   .signInForm {
     display: flex;
     flex-direction: column;

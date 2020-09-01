@@ -273,6 +273,7 @@
 
             .authorDetails {
                 display: flex;
+                overflow: hidden;
 
                 h2 {
                     text-align: start;
@@ -287,13 +288,11 @@
                 }
             }
 
-            
-
             img {
                 width: 70px;
-                height: 50px;
+                height: 60px;
                 margin-right: 15px;
-                align-self: center;
+                object-fit: cover;
             }
         }
 
@@ -372,6 +371,7 @@
                 }
 
                 textarea {
+                    font-size: 1.2em;
                     margin: auto;
                     max-width: 400px;
                     min-width: 400px;
@@ -400,9 +400,12 @@
                     font-size: 0.8em;
 
                     .commentProfilePic {
-                        width: 60px;
+                        width: 20%;
+                        height: 50px;
                         margin-right: 15px;
                         align-self: center;
+                        object-fit: cover;
+
                     }
 
                     h2 {

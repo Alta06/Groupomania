@@ -1,6 +1,6 @@
 <template>
      <header>
-          <h1>Groupomania</h1>
+          <img src="../assets/icon-left-font-monochrome-white-rework.png" alt="">
     </header>
 </template>
 
@@ -15,22 +15,20 @@ name: 'Header'
 header {
     display: flex;
     justify-content: flex-end;
-    height: 150px;
 
-    h1 {
-        padding: 20px;
-        font-size: 4em;
-        color: white;
+    img {
+        margin: 50px;
+        width: 500px;
     }
 }
 
 @media all and (max-width: 425px) {
 
     header {
-                   display: none;
 
+display: none;
+        
 
-       
     }
 }
 
