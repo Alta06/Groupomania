@@ -226,6 +226,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 
+$btnTextClr: #003A4D;
 
 @mixin btn {
   display: flex;
@@ -236,7 +237,7 @@
   height: 50px;
   border: none;
   cursor: pointer;
-  color: #003A4D;
+  color: $btnTextClr;
   background: white;
   font-size: 1.5em;
   font-weight: bold;
@@ -266,7 +267,7 @@
             padding: 10px 25px;
             display: flex;
             flex-direction: column;
-            background: #003A4D;
+            background: $btnTextClr;
             width: 400px;
             flex-wrap: wrap;
 
@@ -316,7 +317,7 @@
                         font-size: 1.5em;
 
                         em {
-                            color: #003A4D;
+                            color: $btnTextClr;
                             cursor: pointer;
 
                             &:before {
@@ -336,7 +337,7 @@
                     }
 
                     .nbLikes {
-                        color: #003A4D;
+                        color: $btnTextClr;
                         margin-left: auto;
                         font-size: 1.2em;
                     }
@@ -347,7 +348,7 @@
                     display: flex;
                     flex-direction: column;
                     margin: 5px;
-                    color: #003A4D;
+                    color: $btnTextClr;
 
         .inputBloc {
             display: flex;
@@ -389,7 +390,7 @@
                 margin: 5px auto ;
                 display: flex;
                 flex-direction: column;
-                background: #003A4D;
+                background: $btnTextClr;
                 color: white;
                 flex-wrap: wrap;
                 width: 400px;

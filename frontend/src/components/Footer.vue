@@ -1,7 +1,7 @@
 <template>
       <footer>
         <img src="@/assets/icon-left-font-monochrome-white.png" alt="">
-        <p>| Enterprise social network | by Antoine Lbt</p>
+        <p>| Enterprise social network</p>
     </footer>
 </template>
 

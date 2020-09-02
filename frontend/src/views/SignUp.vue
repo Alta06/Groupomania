@@ -12,32 +12,32 @@
         </div>
 
       <div class="group">
-        <input v-model="firstName" class="formInput" required type="text">
-        <label class="label">Prénom</label>
+        <input v-model="firstName" class="formInput" id="firstName" required type="text" maxlength="20">
+        <label for="firstName" class="label">Prénom</label>
       
       </div>
 
       <div class="group">
-        <input v-model="lastName" class="formInput" required type="text">
-        <label class="label">Nom</label>
+        <input v-model="lastName" class="formInput" id="lastName" required type="text" maxlength="20">
+        <label for="lastName" class="label">Nom</label>
        
       </div>
 
       <div class="group">
-        <input v-model="email" class="formInput" required type="email">
-        <label class="label">Email</label>
+        <input v-model="email" class="formInput" id="email" required type="email">
+        <label for="email" class="label">Email</label>
        
       </div>
 
       <div class="group">
-        <input v-model="password" class="formInput" required type="password">
-        <label class="label">Mot de passe</label>
+        <input v-model="password" class="formInput" id="password" required type="password" maxlength="25">
+        <label for="password" class="label">Mot de passe</label>
       
       </div>
 
       <div class="group">
-        <input v-model="password_repeat" class="formInput" required type="password">
-        <label class="label">Confirmez le mot de passe</label>
+        <input v-model="password_repeat" class="formInput" id="password_repeat" required type="password" maxlength="25">
+        <label for="password_repeat" class="label">Confirmez le mot de passe</label>
         
       </div>
       <button type="button" @click="signUp" id="btnSubmit">Créer un compte</button>
@@ -130,6 +130,9 @@
 </script>
 
 <style lang="scss">
+
+$btnTextClr: #003A4D;
+
 @mixin btn {
   display: flex;
   margin: auto;
@@ -139,7 +142,7 @@
   height: 50px;
   border: none;
   cursor: pointer;
-  color: #003A4D;
+  color: $btnTextClr;
   font-size: 1.5em;
   font-weight: bold;
   transition: .4s ease-in-out;
@@ -153,7 +156,6 @@
 #btnSubmit {
   @include btn;
 }
-
 
   .container {
     margin: 50px auto 50px;
@@ -204,8 +206,15 @@
     width: 300px;
     border: none;
     border-bottom: 1px solid #ffffff;
-    background: #003A4D;
+    background: $btnTextClr;
     color: white;
+
+  }
+
+  #firstName, #lastName, #email, #password, #confirm_password {
+        &:valid {
+      border-bottom: 2px solid rgb(0, 185, 0);
+    }
   }
 
   input:focus {
@@ -231,22 +240,5 @@
     font-size: 14px;
     color: #ffffff;
   }
-
-  $bgButton : #03C3FF;
-  $bgButton2 : #1FC567;
-
-  @mixin button ($bgButton) {
-    margin-bottom: 30px;
-    border: none;
-    background-color: $bgButton;
-    width: 320px;
-    height: 60px;
-    border-radius: 8px;
-    color: white;
-    font-size: 2em;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
 
 </style>

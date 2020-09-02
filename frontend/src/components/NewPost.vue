@@ -75,7 +75,8 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 
-$principalClr: #005cb3;
+$btnTextClr: #003A4D;
+
 
 @mixin btn {
   display: flex;
@@ -86,30 +87,30 @@ $principalClr: #005cb3;
   height: 50px;
   border: none;
   cursor: pointer;
-  color: #003A4D;
+  color: $btnTextClr;
   background: white;
   font-size: 1.5em;
   font-weight: bold;
   transition: .4s ease-in-out;
 
   &:hover {
-    box-shadow: inset #003d75 0px 0px 0px 50px;
+    box-shadow: inset $btnTextClr 0px 0px 0px 50px;
     color: white;
   }
 }
 
     #addGif {
         border-radius: 10px;
-        background-color: $principalClr;
+        background-color: #003d75;
         margin: auto;
     }
 
     #sendLabel {
-        color: #003a4d;
+        color: $btnTextClr;
     }
 
     .msg {
-        color: #003a4d;
+        color: $btnTextClr;
         margin: 10px;
         font-weight: bold;
     }
@@ -127,7 +128,7 @@ $principalClr: #005cb3;
             padding: 25px;
             display: flex;
             flex-direction: column;
-            background: #003a4d;
+            background: $btnTextClr;
             width: 300px;
             margin-bottom: 25px;
 
@@ -161,7 +162,7 @@ $principalClr: #005cb3;
                     font-size: 1.2em;
                     padding: 15px;
                     height: 80px;
-                    border: 2px solid #003a4d;
+                    border: 2px solid $btnTextClr;
                     height: 60%;
 
                    

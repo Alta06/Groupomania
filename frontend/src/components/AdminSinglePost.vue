@@ -153,7 +153,8 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-    $principalClr: #005cb3;
+
+$btnTextClr: #003A4D;
 
     @mixin btn {
         display: flex;
@@ -164,14 +165,14 @@
         height: 50px;
         border: none;
         cursor: pointer;
-        color: #003A4D;
+        color: $btnTextClr;
         background: white;
         font-size: 1.3em;
         font-weight: bold;
         transition: .4s ease-in-out;
 
         &:hover {
-            box-shadow: inset #003d75 0px 0px 0px 50px;
+            box-shadow: inset $btnTextClr 0px 0px 0px 50px;
             color: white;
         }
     }

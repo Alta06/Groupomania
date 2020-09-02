@@ -15,10 +15,11 @@
           <img v-if="!detail.profilePic" class="profilePic" src="../assets/anonymous.png"
             alt="Photo de profil par défaut" />
 
+            <label for="addPic" id="addPicLabel">Modifiez votre photo de profil</label>
           <input type="file" @change="onFileChange" id="addPic" name="addPic"
             accept="image/jpg, image/png, image/jpeg" />
 
-          <h3 v-if="isHidden">Cliquez sur les champs que vous souhaitez modifiez</h3>
+          <h3>Cliquez sur les champs que vous souhaitez modifiez</h3>
 
           <div class="group">
             <input v-model="firstName" type="text" name="firstName" id="firstName" required />
@@ -167,7 +168,8 @@
 </script>
 
 <style scoped lang="scss">
-  $principalClr: #005cb3;
+
+$btnTextClr: #003A4D;
 
 @mixin btn {
   display: flex;
@@ -186,7 +188,7 @@
   text-decoration: none;
 
   &:hover {
-    box-shadow: inset #003d75 0px 0px 0px 50px;
+    box-shadow: inset $btnTextClr 0px 0px 0px 50px;
     color: white;
   }
 }
@@ -273,8 +275,12 @@
 
     #addPic {
       margin: 10px auto 30px;
-      background-color: #1fc567;
+      background-color: $btnTextClr;
       border-radius: 10px;
+    }
+
+    #addPicLabel {
+      margin-top: 15px;
     }
 
   }

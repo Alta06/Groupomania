@@ -17,8 +17,8 @@
       </div>
 
       <div class="group">
-        <input v-model="password" class="formInput" id="password" type="password" required>
-        <label for="password" class="label">Mot de passe</label>
+        <input v-model="password" class="formInput" id="pass" type="password" maxlength="25" required>
+        <label for="pass" class="label">Mot de passe</label>
       </div>
 
       <button @click="login" type="button" id="btnSubmit">Connexion</button>
@@ -89,17 +89,19 @@
                 this.msg = res.message;
 
               } else {
+
                 this.$store.dispatch('login', {
                   token,
                   user
                 });
+
+              //On vérifie dans la BDD si l'utilisateur est admin ou non
                 this.member = AuthService.getInfo().then((user) => {
                   let type = user[0].isAdmin;
                   this.$store.dispatch('becomeAdmin', {
                     type
                   });
                 });
-
 
                 this.$router.push('/latest');
               }
@@ -118,16 +120,12 @@
 
     },
 
-    computed: {
-
-    }
-
   }
 </script>
 
 <style lang="scss">
 
-$principalClr: #005cb3;
+$btnTextClr: #003A4D;
 
 @mixin btn {
   display: flex;
@@ -138,7 +136,7 @@ $principalClr: #005cb3;
   height: 50px;
   border: none;
   cursor: pointer;
-  color: #003A4D;
+  color: $btnTextClr;
   font-size: 1.5em;
   font-weight: bold;
   transition: .4s ease-in-out;
@@ -210,7 +208,7 @@ $principalClr: #005cb3;
     width: 300px;
     border: none;
     border-bottom: 1px solid #ffffff;
-    background: #003A4D;
+    background: $btnTextClr;
     color: white;
   }
 
@@ -229,7 +227,6 @@ $principalClr: #005cb3;
     transition: 0.2s ease all;
   }
 
-  /* active state */
   input:focus~label,
   input:valid~label {
     top: -20px;
